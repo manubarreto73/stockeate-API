@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/stockify}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: false
+    locations: classpath:migration/V1__init_schema.sql
+  
+security:
+  jwt:
+    secret-key: 0DNJ1N4u8v7yXmEKRhNf567OJUuvL4RvEKSUmkDZxp0QkTAn
+    expiration-time: 3600
+
+app:
+  search:
+    max-results: ${SEARCH_MAX_RESULTS:50}
+  security:
+    max-login-attempts: ${MAX_LOGIN_ATTEMPTS:5}
+    session-timeout-minutes: ${SESSION_TIMEOUT_MINUTES:60}
