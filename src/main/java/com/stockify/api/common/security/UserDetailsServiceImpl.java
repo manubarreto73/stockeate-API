@@ -20,14 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        System.out.println("Buscando usuario: " + username);
-        userRepository.findAll().forEach(u -> 
-            System.out.println("En BD: '" + u.getEmail() + "' activo: " + u.getActivo())
-        );
         Usuario user = userRepository.findByEmailAndActivoTrue(username)
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        System.out.println("Usuario encontrado: " + user.getEmail());
-        System.out.println("Password hash: " + user.getPassword());
 
         // Acá iría la conversión de roles a GrantedAuthority
 

@@ -22,7 +22,7 @@ spring:
 security:
   jwt:
     secret-key: 0DNJ1N4u8v7yXmEKRhNf567OJUuvL4RvEKSUmkDZxp0QkTAn
-    expiration-time: 3600
+    expiration-time: 3600000
 
 app:
   search:

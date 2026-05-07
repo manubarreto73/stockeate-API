@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +39,6 @@ public class SesionController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        System.out.println("Login request - email: " + request.getEmail());
-        System.out.println("Login request - password: " + request.getPassword());
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
@@ -48,6 +47,14 @@ public class SesionController {
         String token = jwtService.generateToken(userDetails);
         return ResponseEntity
             .ok(new LoginResponse(token));
+    }
+
+    @GetMapping
+    public ResponseEntity<UsuarioResponse> getMe(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.findByEmail(userDetails.getUsername());
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(UsuarioResponse.from(usuario));
     }
 
 }
