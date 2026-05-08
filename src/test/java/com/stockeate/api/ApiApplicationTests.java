@@ -1,4 +1,4 @@
-package com.stockify.api;
+package com.stockeate.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
