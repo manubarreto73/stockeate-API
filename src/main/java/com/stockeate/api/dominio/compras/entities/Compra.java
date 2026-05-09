@@ -3,7 +3,7 @@ package com.stockeate.api.dominio.compras.entities;
 import java.time.LocalDate;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
-import com.stockeate.api.dominio.sesiones.entities.Usuario;
+import com.stockeate.api.dominio.usuarios.entities.Usuario;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.sesiones.dtos.controller.login;
+package com.stockeate.api.dominio.usuarios.dtos.controller.sesiones;
 
 import lombok.*;
 

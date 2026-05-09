@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.formasDePago.entities.FormaDePago;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
-import com.stockeate.api.dominio.sesiones.entities.Usuario;
+import com.stockeate.api.dominio.usuarios.entities.Usuario;
 
 import jakarta.persistence.*;
 import lombok.*;

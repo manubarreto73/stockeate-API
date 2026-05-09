@@ -7,6 +7,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.stockeate.api.dominio.usuarios.service.UsuarioService;
+
 import io.jsonwebtoken.ExpiredJwtException;
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ import lombok.*;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final UsuarioService userDetailsService;
 
     @Override
     protected void doFilterInternal(

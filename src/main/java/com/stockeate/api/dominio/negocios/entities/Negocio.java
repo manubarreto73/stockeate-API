@@ -7,7 +7,7 @@ import com.stockeate.api.dominio.compras.entities.Compra;
 import com.stockeate.api.dominio.productos.entities.Categoria;
 import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
-import com.stockeate.api.dominio.sesiones.entities.Usuario;
+import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.ventas.entities.Venta;
 import com.stockeate.api.parametros.Parametros;
 
@@ -28,6 +28,9 @@ public class Negocio {
 
     @Column(name = "nombre_negocio", nullable = false, unique = true, length = 100)
     private String nombreNegocio;
+
+    @Column(nullable = false)
+    private Boolean activo;
 
     @OneToMany(mappedBy = "negocio", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Cliente> clientes;

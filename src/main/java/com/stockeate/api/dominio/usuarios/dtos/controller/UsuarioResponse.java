@@ -1,8 +1,8 @@
-package com.stockeate.api.dominio.sesiones.dtos.controller;
+package com.stockeate.api.dominio.usuarios.dtos.controller;
 
 import java.time.LocalDateTime;
 
-import com.stockeate.api.dominio.sesiones.entities.Usuario;
+import com.stockeate.api.dominio.usuarios.entities.Usuario;
 
 import lombok.*;
 
