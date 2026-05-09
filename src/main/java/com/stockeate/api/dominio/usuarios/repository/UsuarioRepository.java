@@ -14,17 +14,17 @@ import com.stockeate.api.dominio.usuarios.entities.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
-    List<Usuario> getAllUsuarios();
+    List<Usuario> findAll();
 
-    List<Usuario> findByNegocio(Negocio negocio);
+    List<Usuario> findByNegocioAndActivoTrue(Negocio negocio);
     
     List<Usuario> findByActivoTrue();
 
     Optional<Usuario> findByIdAndNegocioAndActivoTrue(Long id, Negocio negocio);
 
-    @Query("SELECT u FROM Usuario u JOIN FETCH u.negocio JOIN FETCH u.roles WHERE u.email = :email AND u.activo = true")
+    @Query("SELECT u FROM Usuario u JOIN FETCH u.negocio WHERE u.email = :email AND u.activo = true")
     Optional<Usuario> findByEmailAndActivoTrue(@Param("email") String email);
 
-    boolean existsByEmailAndActivoTrue(String email);
+    boolean existsByEmail(String email);
 
 }

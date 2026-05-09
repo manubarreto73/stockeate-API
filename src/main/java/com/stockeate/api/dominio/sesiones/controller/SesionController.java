@@ -9,13 +9,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import com.stockeate.api.dominio.negocios.dtos.service.CreateNegocioRequest;
 import com.stockeate.api.dominio.sesiones.dtos.controller.LoginRequest;
 import com.stockeate.api.dominio.sesiones.dtos.controller.LoginResponse;
 import com.stockeate.api.dominio.sesiones.dtos.controller.RegistroRequest;
 import com.stockeate.api.dominio.sesiones.dtos.controller.RegistroResponse;
-import com.stockeate.api.dominio.sesiones.dtos.service.RegistrarNegocioRequest;
-import com.stockeate.api.dominio.sesiones.dtos.service.RegistrarNegocioResponse;
 import com.stockeate.api.dominio.sesiones.service.RegistroNegocioService;
 import com.stockeate.api.dominio.usuarios.dtos.controller.UsuarioResponse;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;

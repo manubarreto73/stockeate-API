@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.stockeate.api.exceptions.exceptions.BusinessException;
 import com.stockeate.api.exceptions.exceptions.ResourceNotFoundException;
-
-import io.jsonwebtoken.ExpiredJwtException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,23 +25,28 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse(401, "Credenciales inválidas", LocalDateTime.now()));
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<ErrorResponse> handleExpiredJwt(ExpiredJwtException e) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
         return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body(new ErrorResponse(401, "Token expirado", LocalDateTime.now()));
+            .status(HttpStatus.FORBIDDEN)
+            .body(new ErrorResponse(401, "Accion no autorizada", LocalDateTime.now()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException  e) {
         
         Map<String, String> errores = new HashMap<>();
-
-        e.getBindingResult().getFieldErrors().forEach(error -> {errores.put(error.getField(), error.getDefaultMessage());});
+        e.getBindingResult().getFieldErrors()
+            .forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
+        
+        Map<String, Object> body = new HashMap<>();
+            body.put("status", 400);
+            body.put("errores", errores);
+            body.put("timestamp", LocalDateTime.now());
         
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(400, errores.toString(), LocalDateTime.now()));
+            .body(new ErrorResponse(400, errores, LocalDateTime.now()));
     }
 
     @ExceptionHandler(BusinessException.class)

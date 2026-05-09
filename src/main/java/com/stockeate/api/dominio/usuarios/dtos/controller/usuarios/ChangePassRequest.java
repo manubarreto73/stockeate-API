@@ -1,6 +1,7 @@
 package com.stockeate.api.dominio.usuarios.dtos.controller.usuarios;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @Builder
 public class ChangePassRequest {
 
-    @NotBlank
+    @NotNull
     private Long id;
 
     @NotBlank(message = "La contraseña es obligatoria")

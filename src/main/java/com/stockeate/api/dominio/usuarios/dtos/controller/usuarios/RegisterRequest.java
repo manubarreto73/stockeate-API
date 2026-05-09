@@ -27,6 +27,7 @@ public class RegisterRequest {
     public Usuario toEntity() {
         return Usuario.builder()
             .email(email)
+            .nombreCompleto(nombreCompleto)
             .password(password)
             .build();
     }

@@ -23,7 +23,7 @@ public class RegistroResponse {
     private String email;
     private String nombreCompleto;
     private LocalDateTime ultimoAcceso;
-    private LocalDateTime fechaCreacionUsuario;
+    private LocalDate fechaCreacionUsuario;
     private RolUsuario rol;
 
     public static RegistroResponse from(RegistrarNegocioResponse registroResponse) {

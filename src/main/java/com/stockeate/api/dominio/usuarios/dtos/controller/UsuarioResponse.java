@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.usuarios.dtos.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.usuarios.entities.RolUsuario;
@@ -15,7 +16,7 @@ public class UsuarioResponse {
     private String email;
     private String nombreCompleto;
     private LocalDateTime ultimoAcceso;
-    private LocalDateTime fechaCreacion;
+    private LocalDate fechaCreacion;
     private RolUsuario rol;
 
     public static UsuarioResponse from(Usuario usuario) {

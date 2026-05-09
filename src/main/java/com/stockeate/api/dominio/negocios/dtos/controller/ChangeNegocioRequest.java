@@ -10,9 +10,6 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 public class ChangeNegocioRequest {
-    
-    @NotBlank
-    private Long id;
 
     @NotBlank
     @Size(max = 100, message = "El nombre del negocio no puede superar los 100 caracteres")

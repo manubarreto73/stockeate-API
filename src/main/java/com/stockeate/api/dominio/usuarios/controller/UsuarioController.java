@@ -5,17 +5,18 @@ import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.ChangePassReq
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.ChangeRolRequest;
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.RegisterRequest;
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.ChangeUsuarioRequest;
+import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.DeleteUsuarioRequest;
 import com.stockeate.api.dominio.usuarios.dtos.services.CreateUsuarioRequest;
 import com.stockeate.api.dominio.usuarios.dtos.services.UpdateUsuarioRequest;
 import com.stockeate.api.dominio.usuarios.entities.RolUsuario;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.usuarios.service.UsuarioService;
-import com.stockeate.api.exceptions.exceptions.BusinessException;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,7 @@ public class UsuarioController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponse> update (
         @AuthenticationPrincipal Usuario autentiado,
         @Valid @RequestBody ChangeUsuarioRequest request
@@ -78,9 +80,9 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete (
         @AuthenticationPrincipal Usuario autenticado,
-        @RequestBody Long usuarioid
+        @RequestBody DeleteUsuarioRequest request
     ) {
-        usuarioService.deactivate(autenticado.getNegocio(), usuarioid);
+        usuarioService.deactivate(autenticado.getNegocio(), request.getId());
         return ResponseEntity.ok().build();
     }
 
@@ -113,7 +115,7 @@ public class UsuarioController {
 
     private void isUserOrHimself (Usuario autenticado, Long id) {
         if (!autenticado.getRol().equals(RolUsuario.ADMIN) && !autenticado.getId().equals(id))
-            throw new BusinessException("No tenés permisos para realizar esta operación");
+            throw new AccessDeniedException("No tenés permisos para realizar esta operación");
     }
 
 }

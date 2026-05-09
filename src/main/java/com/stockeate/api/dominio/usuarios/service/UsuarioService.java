@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.usuarios.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class UsuarioService implements UserDetailsService{
     private final UsuarioRepository usuarioRepository;
 
     public List<Usuario> getByNegocio (Negocio negocio) {
-        return usuarioRepository.findByNegocio(negocio);
+        return usuarioRepository.findByNegocioAndActivoTrue(negocio);
     }
 
     public Usuario findById (Negocio negocio, Long id) {
@@ -50,7 +51,7 @@ public class UsuarioService implements UserDetailsService{
 
     @Transactional
     public Usuario createAdmin (Negocio negocio, CreateUsuarioRequest request) {
-        if (usuarioRepository.existsByEmailAndActivoTrue(request.getEmail()))
+        if (usuarioRepository.existsByEmail(request.getEmail()))
             throw new BusinessException("Ya existe un usuario con el email " + request.getEmail());
 
         Usuario usuario = request.toEntity();
@@ -58,7 +59,7 @@ public class UsuarioService implements UserDetailsService{
         usuario.setNegocio(negocio);
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setActivo(true);
-        usuario.setFechaCreacion(LocalDateTime.now());
+        usuario.setFechaCreacion(LocalDate.now());
         usuario.setRol(RolUsuario.ADMIN);
 
         return usuarioRepository.save(usuario);
@@ -66,7 +67,7 @@ public class UsuarioService implements UserDetailsService{
 
     @Transactional
     public Usuario create (Negocio negocio, CreateUsuarioRequest request) {
-        if (usuarioRepository.existsByEmailAndActivoTrue(request.getEmail()))
+        if (usuarioRepository.existsByEmail(request.getEmail()))
             throw new BusinessException("Ya existe un usuario con el email " + request.getEmail());
 
         Usuario usuario = request.toEntity();
@@ -74,7 +75,7 @@ public class UsuarioService implements UserDetailsService{
         usuario.setNegocio(negocio);
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setActivo(true);
-        usuario.setFechaCreacion(LocalDateTime.now());
+        usuario.setFechaCreacion(LocalDate.now());
         usuario.setRol(RolUsuario.EMPLEADO);
 
         return usuarioRepository.save(usuario);
@@ -83,6 +84,8 @@ public class UsuarioService implements UserDetailsService{
     @Transactional
     public Usuario update (Negocio negocio, Long id, UpdateUsuarioRequest request) {
         Usuario usuario = findById(negocio, id);
+        if (!request.hasChanges(usuario))
+            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
         return usuarioRepository.save(request.update(usuario));
     }
 
@@ -93,6 +96,10 @@ public class UsuarioService implements UserDetailsService{
             throw new BusinessException("Rol no permitido");
 
         Usuario usuario = findById(negocio, id);
+
+        if (usuario.getRol().equals(RolUsuario.ADMIN) || usuario.getRol().equals(RolUsuario.ADMIN))
+            throw new BusinessException("Rol se puede cambiar el rol del administrador");
+
         usuario.setRol(rol);
         return usuarioRepository.save(usuario);
     }
@@ -104,13 +111,17 @@ public class UsuarioService implements UserDetailsService{
         if (password.equals(usuario.getPassword()))
             throw new BusinessException("La nueva contraseña es igual a la actual");
 
-        usuario.setPassword(password);
+        usuario.setPassword(passwordEncoder.encode(password));
         return usuarioRepository.save(usuario);
     }
 
     @Transactional
     public void deactivate (Negocio negocio, Long id) {
         Usuario usuario = findById(negocio, id);
+        
+        if (usuario.getRol().equals(RolUsuario.SUPERADMIN) || usuario.getRol().equals(RolUsuario.ADMIN))
+            throw new BusinessException("No se puede eliminar al usuario administrador");
+
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
     }

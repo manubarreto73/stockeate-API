@@ -37,6 +37,8 @@ public class NegocioService {
 
         Negocio negocio = request.toEntity();
 
+        //FIXME Crear los parámetros con valores defaults
+
         negocio.setFechaCreacion(LocalDate.now());
         negocio.setActivo(true);
 
@@ -46,7 +48,8 @@ public class NegocioService {
     @Transactional
     public Negocio update (Long id, UpdateNegocioRequest request) {
         Negocio negocio = findById(id);
-        
+        if (!request.hasChanges(negocio))
+            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
         return negocioRepository.save(request.update(negocio));
     }
 

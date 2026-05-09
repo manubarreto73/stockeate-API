@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class ErrorResponse {
     private Integer status;
-    private String message;
+    private Object message;
     private LocalDateTime timestamp;
 }

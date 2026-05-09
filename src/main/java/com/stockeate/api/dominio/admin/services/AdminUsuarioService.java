@@ -26,7 +26,7 @@ public class AdminUsuarioService {
     private final UsuarioRepository usuarioRepository;
 
     public List<Usuario> getAll () {
-        return usuarioRepository.getAllUsuarios();
+        return usuarioRepository.findAll();
     }
 
 }

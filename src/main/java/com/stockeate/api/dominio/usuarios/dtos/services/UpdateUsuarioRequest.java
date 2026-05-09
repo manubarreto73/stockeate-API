@@ -18,6 +18,10 @@ public class UpdateUsuarioRequest {
         return usuario;
     }
 
+    public Boolean hasChanges(Usuario usuario) {
+        return !(usuario.getNombreCompleto().equals(nombreCompleto));
+    }
+
     public static UpdateUsuarioRequest from(Usuario usuario) {
         return UpdateUsuarioRequest.builder()
             .nombreCompleto(usuario.getNombreCompleto())

@@ -3,6 +3,7 @@ package com.stockeate.api.dominio.usuarios.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,7 @@ public class Usuario implements UserDetails{
     @Column(name = "usuario_id")
     private Long id;
 
+    //FIXME resolver limitante de unicidad en los correos
     @Column(nullable = false, unique = true, length = 255)
     private String email;
     
@@ -38,7 +40,7 @@ public class Usuario implements UserDetails{
     private LocalDateTime ultimoAcceso;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private LocalDate fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;

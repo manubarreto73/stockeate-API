@@ -11,7 +11,7 @@ import com.stockeate.api.dominio.negocios.entities.Negocio;
 @Repository
 public interface NegocioRepository extends JpaRepository<Negocio, Long>{
  
-    List<Negocio> getAll();
+    List<Negocio> findAll();
 
     List<Negocio> findByActivoTrue();
 
