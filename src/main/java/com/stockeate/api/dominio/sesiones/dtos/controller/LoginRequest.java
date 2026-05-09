@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.usuarios.dtos.controller.sesiones;
+package com.stockeate.api.dominio.sesiones.dtos.controller;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
