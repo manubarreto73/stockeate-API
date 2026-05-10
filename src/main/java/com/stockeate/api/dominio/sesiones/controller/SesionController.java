@@ -13,12 +13,15 @@ import com.stockeate.api.dominio.sesiones.dtos.controller.LoginRequest;
 import com.stockeate.api.dominio.sesiones.dtos.controller.LoginResponse;
 import com.stockeate.api.dominio.sesiones.dtos.controller.RegistroRequest;
 import com.stockeate.api.dominio.sesiones.dtos.controller.RegistroResponse;
+import com.stockeate.api.dominio.sesiones.service.LoginAttemptsService;
 import com.stockeate.api.dominio.sesiones.service.RegistroNegocioService;
 import com.stockeate.api.dominio.usuarios.dtos.controller.UsuarioResponse;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.usuarios.service.UsuarioService;
+import com.stockeate.api.exceptions.exceptions.BusinessException;
 import com.stockeate.api.security.JwtService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.*;
 
@@ -28,6 +31,7 @@ import lombok.*;
 public class SesionController {
     
     private final UsuarioService usuarioService;
+    private final LoginAttemptsService loginAttemptsService;
     private final RegistroNegocioService registroNegocioService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -52,21 +56,35 @@ public class SesionController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
-        @Valid @RequestBody LoginRequest request
+        @Valid @RequestBody LoginRequest request,
+        HttpServletRequest httpRequest
     ) {
-        authenticationManager.authenticate(
+        String ip = httpRequest.getRemoteAddr();
+
+        if (loginAttemptsService.estaBloqueada(ip))
+            throw new BusinessException("IP bloqueada temporalmente");
+
+        try {
+            authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+            );
 
-        Usuario usuario = (Usuario) usuarioService.loadUserByUsername(request.getEmail());
+            Usuario usuario = (Usuario) usuarioService.loadUserByUsername(request.getEmail());
 
-        if (!usuario.getNegocio().getNombreNegocio().equals(request.getNegocio()))
-            throw new BadCredentialsException("El usuario no pertenece a ese negocio");
+            if (!usuario.getNegocio().getNombreNegocio().equals(request.getNegocio()))
+                throw new BadCredentialsException("El usuario no pertenece a ese negocio");
 
-        usuarioService.updateLastAccess(usuario.getNegocio(), usuario.getId());
+            usuarioService.updateLastAccess(usuario.getNegocio(), usuario.getId());
+            loginAttemptsService.limpiarIntentos(ip);
 
-        return ResponseEntity
-            .ok(new LoginResponse(jwtService.generateToken(usuario)));
+            return ResponseEntity
+                .ok(new LoginResponse(jwtService.generateToken(usuario)));
+        } 
+        catch (BadCredentialsException e) {
+            loginAttemptsService.registrarIntento(ip);
+            System.out.print("registre");
+            throw e;
+        }  
     }
 
     @PostMapping("/reset-password")

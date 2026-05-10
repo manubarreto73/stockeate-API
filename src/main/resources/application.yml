@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: api
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/Stockeate}
     username: ${DB_USERNAME:postgres}
@@ -18,6 +20,10 @@ spring:
   flyway:
     enabled: false
     locations: classpath:migration/V1__init_schema.sql
+  data:
+    redis:
+      host: localhost
+      port: 6379
   
 security:
   jwt:
