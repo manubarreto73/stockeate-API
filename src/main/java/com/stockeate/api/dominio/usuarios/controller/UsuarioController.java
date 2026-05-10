@@ -11,9 +11,9 @@ import com.stockeate.api.dominio.usuarios.dtos.services.UpdateUsuarioRequest;
 import com.stockeate.api.dominio.usuarios.entities.RolUsuario;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.usuarios.service.UsuarioService;
+import com.stockeate.api.parametros.ApiConstants;
 
-import java.util.List;
-
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,17 +33,19 @@ public class UsuarioController {
     
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UsuarioResponse>> getAll(
-        @AuthenticationPrincipal Usuario autenticado
+    public ResponseEntity<Page<UsuarioResponse>> getAll(
+        @AuthenticationPrincipal Usuario autenticado,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "fechaCreacion") String sortBy,
+        @RequestParam(defaultValue = "asc") String sortDir
     ) {
-        List<Usuario> usuarios = usuarioService.getByNegocio(autenticado.getNegocio());
+        Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
+        Page<Usuario> usuarios = usuarioService.getByNegocio(autenticado.getNegocio(), pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(usuarios.stream()
-                .map(UsuarioResponse::from)
-                .toList()
-            );
+            .body(usuarios.map(UsuarioResponse::from));
     }
 
     @PostMapping

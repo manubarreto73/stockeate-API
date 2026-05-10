@@ -2,8 +2,8 @@ package com.stockeate.api.dominio.usuarios.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
+import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,8 +29,8 @@ public class UsuarioService implements UserDetailsService{
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository usuarioRepository;
 
-    public List<Usuario> getByNegocio (Negocio negocio) {
-        return usuarioRepository.findByNegocioAndActivoTrue(negocio);
+    public Page<Usuario> getByNegocio (Negocio negocio, Pageable pageable) {
+        return usuarioRepository.findByNegocioAndActivoTrue(negocio, pageable);
     }
 
     public Usuario findById (Negocio negocio, Long id) {
