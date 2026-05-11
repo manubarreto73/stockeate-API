@@ -3,9 +3,9 @@ package com.stockeate.api.dominio.negocios.entities;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.compras.entities.Compra;
-import com.stockeate.api.dominio.productos.entities.Categoria;
 import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;

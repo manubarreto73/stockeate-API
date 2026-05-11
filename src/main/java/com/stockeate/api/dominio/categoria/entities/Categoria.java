@@ -1,8 +1,10 @@
-package com.stockeate.api.dominio.productos.entities;
+package com.stockeate.api.dominio.categoria.entities;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
+import com.stockeate.api.dominio.productos.entities.Producto;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +26,9 @@ public class Categoria {
 
     @Column(nullable = false, length = 100)
     private String descripcion;
+
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDate fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;

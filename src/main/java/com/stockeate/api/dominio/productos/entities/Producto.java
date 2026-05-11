@@ -1,5 +1,8 @@
 package com.stockeate.api.dominio.productos.entities;
 
+import java.time.LocalDate;
+
+import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 
@@ -27,15 +30,18 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDate fechaCreacion;
+
     @Column(nullable = false)
     private Boolean activo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "categoria_id")
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "categoria_id", nullable = true)
     private Categoria categoria;
     
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "proveedor_id")
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "proveedor_id", nullable = true)
     private Proveedor proveedor;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
