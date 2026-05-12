@@ -26,4 +26,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query("UPDATE Producto p SET p.categoria = null WHERE p.categoria.id = :categoriaId")
     void clearCategoria(@Param("categoriaId") Long categoriaId);
 
+    @Modifying
+    @Query("UPDATE Producto p SET p.proveedor = null WHERE p.proveedor.id = :proveedorId")
+    void clearProveedor(@Param("proveedorId") Long categoriaId);
+
 }

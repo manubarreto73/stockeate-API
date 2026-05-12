@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.precios.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.productos.entities.Producto;
@@ -18,6 +19,9 @@ public class Precio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "precio_id")
     private Long id;
+
+    @Column(nullable = false)
+    private BigDecimal monto;
 
     @Column(nullable = false)
     private LocalDateTime desde;

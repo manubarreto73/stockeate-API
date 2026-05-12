@@ -11,7 +11,7 @@ import com.stockeate.api.dominio.categoria.dtos.service.UpdateCategoriaRequest;
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.categoria.repositories.CategoriaRepository;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
-import com.stockeate.api.dominio.productos.repositories.ProductoRepository;
+import com.stockeate.api.dominio.productos.services.ProductoService;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
-    private final ProductoRepository productoRepository;
-    
+    private final ProductoService productoService;
+
     //find por desc y negocio
 
     public Categoria findById (Negocio negocio, Long id) {
@@ -66,7 +66,7 @@ public class CategoriaService {
     public void deactivate (Negocio negocio, Long id) {
         Categoria categoria = findById(negocio, id);
         categoria.setActivo(false);
-        productoRepository.clearCategoria(id);
+        productoService.removerCategoria(id);
         categoriaRepository.save(categoria);
     } 
 

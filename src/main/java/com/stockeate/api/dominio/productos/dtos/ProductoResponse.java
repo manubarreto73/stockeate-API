@@ -1,5 +1,9 @@
 package com.stockeate.api.dominio.productos.dtos;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.stockeate.api.dominio.precios.entities.Precio;
 import com.stockeate.api.dominio.productos.entities.Producto;
 
 import lombok.*;
@@ -10,10 +14,26 @@ import lombok.*;
 public class ProductoResponse {
     
     private Long productoId;
+    private String descProducto;
+    private Integer stock;
+    private BigDecimal precio;
+    private LocalDate fechaCreacion;
+    private Long categoriaId;
+    private String descCategoria;
+    private Long proveedorId;
+    private String descProveedor;
 
-    public static ProductoResponse from(Producto producto) {
+    public static ProductoResponse from(Producto producto, Precio precio) {
         return ProductoResponse.builder()
             .productoId(producto.getId())
+            .descProducto(producto.getDescripcion())
+            .stock(producto.getStock())
+            .precio(precio.getMonto())
+            .fechaCreacion(producto.getFechaCreacion())
+            .categoriaId(producto.getCategoria().getId())
+            .descCategoria(producto.getCategoria().getDescripcion())
+            .proveedorId(producto.getProveedor().getId())
+            .descProveedor(producto.getProveedor().getDescripcion())
             .build();
     }
 

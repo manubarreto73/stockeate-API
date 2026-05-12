@@ -21,7 +21,6 @@ import com.stockeate.api.dominio.productos.dtos.controller.DeleteProductoRequest
 import com.stockeate.api.dominio.productos.dtos.controller.RegisterProductoRequest;
 import com.stockeate.api.dominio.productos.dtos.service.CreateProductoRequest;
 import com.stockeate.api.dominio.productos.dtos.service.UpdateProductoRequest;
-import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.productos.services.ProductoService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.parametros.ApiConstants;
@@ -45,11 +44,10 @@ public class ProductoController {
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
-        Page<Producto> productos = productoService.getAll(autenticado.getNegocio(), pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(productos.map(ProductoResponse::from));
+            .body(productoService.getAll(autenticado.getNegocio(), pageable));
     }
 
     @GetMapping("/{categoriaId}")
@@ -62,11 +60,10 @@ public class ProductoController {
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
-        Page<Producto> productos = productoService.getByCategoria(autenticado.getNegocio(), categoriaId, pageable);
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(productos.map(ProductoResponse::from));
+            .body(productoService.getAll(autenticado.getNegocio(), pageable));
     }
 
     @PostMapping
@@ -74,15 +71,16 @@ public class ProductoController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody RegisterProductoRequest request
     ) {
-        Producto producto = productoService.create(
+        ProductoResponse producto = productoService.create(
             autenticado.getNegocio(), 
             CreateProductoRequest.from(request.toEntity()), 
             request.getCategoriaId(), 
-            request.getProveedorId()
+            request.getProveedorId(),
+            request.getPrecio()
         );
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ProductoResponse.from(producto));
+            .body(producto);
     }
 
     @PutMapping
@@ -90,16 +88,17 @@ public class ProductoController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody ChangeProductoRequest request
     ) {
-        Producto producto = productoService.update(
+        ProductoResponse producto = productoService.update(
             autenticado.getNegocio(),
             request.getId(),
             UpdateProductoRequest.from(request.toEntity()), 
             request.getCategoriaId(), 
-            request.getProveedorId()
+            request.getProveedorId(),
+            request.getPrecio()
         );
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ProductoResponse.from(producto));
+            .body(producto);
     }
 
     @DeleteMapping
@@ -118,11 +117,11 @@ public class ProductoController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody AssignCategoriaRequest request
     ) {
-        Producto producto = productoService.asignarCategoria(autenticado.getNegocio(), request.getProductoId(), request.getCategoriaId());
+        ProductoResponse producto = productoService.asignarCategoria(autenticado.getNegocio(), request.getProductoId(), request.getCategoriaId());
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ProductoResponse.from(producto));
+            .body(producto);
     }
 
     @PutMapping("/proveedor")
@@ -130,11 +129,11 @@ public class ProductoController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody AssignProveedorRequest request
     ) {
-        Producto producto = productoService.asignarProveedor(autenticado.getNegocio(), request.getProductoId(), request.getProveedorId());
+        ProductoResponse producto = productoService.asignarProveedor(autenticado.getNegocio(), request.getProductoId(), request.getProveedorId());
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ProductoResponse.from(producto));
+            .body(producto);
     }
 
 }

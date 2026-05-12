@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.productos.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.data.domain.*;
@@ -9,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.categoria.services.CategoriaService;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
+import com.stockeate.api.dominio.precios.services.PrecioService;
+import com.stockeate.api.dominio.productos.dtos.ProductoResponse;
 import com.stockeate.api.dominio.productos.dtos.service.CreateProductoRequest;
 import com.stockeate.api.dominio.productos.dtos.service.UpdateProductoRequest;
 import com.stockeate.api.dominio.productos.entities.Producto;
@@ -27,23 +30,26 @@ public class ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaService categoriaService;
     private final ProveedorService proveedorService;
+    private final PrecioService precioService;
     
     public Producto findById (Negocio negocio, Long id) {
         return productoRepository.findByIdAndNegocioAndActivoTrue(negocio, id)
             .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
     }
 
-    public Page<Producto> getAll (Negocio negocio, Pageable pageable) {
-        return productoRepository.findByActivoTrueAndNegocio(negocio, pageable);
+    public Page<ProductoResponse> getAll (Negocio negocio, Pageable pageable) {
+        Page<Producto> productos = productoRepository.findByActivoTrueAndNegocio(negocio, pageable);
+        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto)));
     }
 
-    public Page<Producto> getByCategoria (Negocio negocio, Long categoriaId, Pageable pageable) {
+    public Page<ProductoResponse> getByCategoria (Negocio negocio, Long categoriaId, Pageable pageable) {
         Categoria categoria = categoriaService.findById(negocio, categoriaId);
-        return productoRepository.findByActivoTrueAndNegocioAndCategoria(negocio, categoria, pageable);
+        Page<Producto> productos = productoRepository.findByActivoTrueAndNegocioAndCategoria(negocio, categoria, pageable);
+        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto)));
     }
 
     @Transactional
-    public Producto create (Negocio negocio, CreateProductoRequest request, Long categoriaId, Long proveedorId) {
+    public ProductoResponse create (Negocio negocio, CreateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
         if (productoRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
@@ -55,17 +61,19 @@ public class ProductoService {
         producto.setStock(request.getStock() != null ? request.getStock() : 0);
         producto.setFechaCreacion(LocalDate.now());
 
+        precioService.asignarPrecio(producto, precio);
+
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
 
-        return productoRepository.save(producto);
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
     }
 
     @Transactional
-    public Producto update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long proveedorId) {
+    public ProductoResponse update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
         if (productoRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
@@ -74,55 +82,68 @@ public class ProductoService {
 
         producto = request.update(producto);
 
+        if (precio != null && precio != precioService.precioActual(producto).getMonto())
+            precioService.asignarPrecio(producto, precio);
+
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
 
-        return productoRepository.save(producto);
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
     }
 
     @Transactional
-    public Producto deactivate (Negocio negocio, Long id) {
+    public void deactivate (Negocio negocio, Long id) {
         Producto producto = findById(negocio, id);
         producto.setActivo(false);
-        return productoRepository.save(producto);
+        productoRepository.save(producto);
     }
 
     @Transactional
-    public Producto aumentarStock (Negocio negocio, Long id, Integer cantidad) {
+    public void aumentarStock (Negocio negocio, Long id, Integer cantidad) {
         Producto producto = findById(negocio, id);
 
         producto.setStock(producto.getStock() + cantidad);
-        return productoRepository.save(producto);
+        productoRepository.save(producto);
     }
 
     @Transactional
-    public Producto reducirStock (Negocio negocio, Long id, Integer cantidad) {
+    public void reducirStock (Negocio negocio, Long id, Integer cantidad) {
         Producto producto = findById(negocio, id);
 
         if (producto.getStock() < cantidad)
             throw new BusinessException("Stock insuficiente");
 
         producto.setStock(producto.getStock() - cantidad);
-        return productoRepository.save(producto);
+        productoRepository.save(producto);
     }
 
     @Transactional
-    public Producto asignarCategoria (Negocio negocio, Long id, Long idCategoria) {
+    public ProductoResponse asignarCategoria (Negocio negocio, Long id, Long idCategoria) {
         Categoria categoria = categoriaService.findById(negocio, idCategoria);
         Producto producto = findById(negocio, id);
         producto.setCategoria(categoria);
-        return productoRepository.save(producto);
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
     }
 
     @Transactional
-    public Producto asignarProveedor (Negocio negocio, Long id, Long idProveedor) {
+    public ProductoResponse asignarProveedor (Negocio negocio, Long id, Long idProveedor) {
         Proveedor proveedor = proveedorService.findById(negocio, idProveedor);
         Producto producto = findById(negocio, id);
         producto.setProveedor(proveedor);
-        return productoRepository.save(producto);
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
+    }
+
+    @Transactional
+    public void removerCategoria (Long categoriaId) {
+        productoRepository.clearCategoria(categoriaId);
+    }
+
+    @Transactional
+    public void removerProveedor (Long proveedorId) {
+        productoRepository.clearProveedor(proveedorId);
     }
 
 }
