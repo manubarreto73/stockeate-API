@@ -1,4 +1,4 @@
-package com.stockeate.api.parametros;
+package com.stockeate.api.parametros.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

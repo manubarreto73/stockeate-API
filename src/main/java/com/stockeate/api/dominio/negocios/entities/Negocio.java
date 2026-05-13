@@ -10,7 +10,7 @@ import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.ventas.entities.Venta;
-import com.stockeate.api.parametros.Parametros;
+import com.stockeate.api.parametros.entities.Parametros;
 
 import jakarta.persistence.*;
 import lombok.*;

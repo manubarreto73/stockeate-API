@@ -11,7 +11,7 @@ import com.stockeate.api.dominio.categoria.dtos.service.UpdateCategoriaRequest;
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.categoria.services.CategoriaService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
-import com.stockeate.api.parametros.ApiConstants;
+import com.stockeate.api.parametros.Constantes;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class CategoriaController {
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page, Constantes.PAGE_SIZE, sort);
         Page<Categoria> categorias = categoriaService.getByNegocio(autenticado.getNegocio(), pageable);
 
         return ResponseEntity

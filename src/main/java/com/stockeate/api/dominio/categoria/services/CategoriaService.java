@@ -51,10 +51,10 @@ public class CategoriaService {
 
     @Transactional
     public Categoria update (Negocio negocio, Long id, UpdateCategoriaRequest request) {
-        if (categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
-            throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
-
         Categoria categoria = findById(negocio, id);
+
+        if (!categoria.getDescripcion().equals(request.getDescripcion()) && categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
+            throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
 
         if (!request.hasChanges(categoria))
             throw new BusinessException("La entidad enviada para actualizar no contiene cambios");

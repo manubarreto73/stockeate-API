@@ -24,7 +24,7 @@ import com.stockeate.api.dominio.productos.dtos.service.CreateProductoRequest;
 import com.stockeate.api.dominio.productos.dtos.service.UpdateProductoRequest;
 import com.stockeate.api.dominio.productos.services.ProductoService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
-import com.stockeate.api.parametros.ApiConstants;
+import com.stockeate.api.parametros.Constantes;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class ProductoController {
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page, Constantes.PAGE_SIZE, sort);
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -60,7 +60,7 @@ public class ProductoController {
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page, Constantes.PAGE_SIZE, sort);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(productoService.getByCategoria(autenticado.getNegocio(), categoriaId, pageable));

@@ -11,6 +11,8 @@ import com.stockeate.api.dominio.negocios.dtos.service.UpdateNegocioRequest;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.negocios.repository.NegocioRepository;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
+import com.stockeate.api.parametros.entities.Parametros;
+import com.stockeate.api.parametros.service.ParametrosService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class NegocioService {
     
     private final NegocioRepository negocioRepository;
+    private final ParametrosService parametrosService;
 
     public Page<Negocio> getAll(Pageable pageable) {
         return negocioRepository.findByActivoTrue(pageable);
@@ -37,8 +40,9 @@ public class NegocioService {
 
         Negocio negocio = request.toEntity();
 
-        //FIXME Crear los parámetros con valores defaults
-        
+        Parametros parametros = parametrosService.createDefault();
+
+        negocio.setParametros(parametros);        
         negocio.setFechaCreacion(LocalDate.now());
         negocio.setActivo(true);
 
@@ -48,6 +52,10 @@ public class NegocioService {
     @Transactional
     public Negocio update (Long id, UpdateNegocioRequest request) {
         Negocio negocio = findById(id);
+
+        if (!negocio.getNombreNegocio().equals(request.getNombreNegocio()) && negocioRepository.existsByNombreNegocio(request.getNombreNegocio()))
+            throw new BusinessException("Ya existe un negocio con ese nombre");
+
         if (!request.hasChanges(negocio))
             throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
         return negocioRepository.save(request.update(negocio));

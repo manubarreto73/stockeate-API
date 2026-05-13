@@ -76,12 +76,11 @@ public class ProductoService {
 
     @Transactional
     public ProductoResponse update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
-        //FIXME - No siempre voy a querer actualizar la descripcion (excluir este elemento en la búsqueda)
-        if (productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+        Producto producto = findById(negocio, id);
+
+        if (!producto.getDescripcion().equals(request.getDescripcion()) && productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
-        
-        Producto producto = findById(negocio, id);
 
         producto = request.update(producto);
 

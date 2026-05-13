@@ -1,6 +1,6 @@
 package com.stockeate.api.parametros;
 
-public class ApiConstants {
+public class Constantes {
 
     public static final int PAGE_SIZE = 30;
 

@@ -11,7 +11,7 @@ import com.stockeate.api.dominio.usuarios.dtos.services.UpdateUsuarioRequest;
 import com.stockeate.api.dominio.usuarios.entities.RolUsuario;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.dominio.usuarios.service.UsuarioService;
-import com.stockeate.api.parametros.ApiConstants;
+import com.stockeate.api.parametros.Constantes;
 
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class UsuarioController {
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page, Constantes.PAGE_SIZE, sort);
         Page<Usuario> usuarios = usuarioService.getByNegocio(autenticado.getNegocio(), pageable);
 
         return ResponseEntity

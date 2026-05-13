@@ -44,11 +44,12 @@ public class ProveedorService {
 
     @Transactional
     public Proveedor update (Negocio negocio, Long id, UpdateProveedorRequest request) {
-        if (proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+        Proveedor proveedor = findById(negocio, id);
+
+        if (!proveedor.getDescripcion().equals(request.getDescripcion()) && proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un proveedor con la descripcion " + request.getDescripcion());
         }
-        
-        Proveedor proveedor = findById(negocio, id);
+
         proveedor = request.update(proveedor);
 
         return proveedorRepository.save(proveedor);

@@ -19,9 +19,13 @@ public class ChangeProveedorRequest {
     @Size(max = 100, message = "La descripción no puede exceder los 100 caracteres")
     private String descripcion;
 
+    @Size(min = 7, max = 20, message = "El telefono debe tener entre 7 y 20 caracteres")
+    private String telefono;
+
     public Proveedor toEntity() {
         return Proveedor.builder()
             .descripcion(descripcion)
+            .telefono(telefono)
             .build();
     }
 

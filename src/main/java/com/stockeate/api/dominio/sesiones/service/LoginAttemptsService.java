@@ -2,7 +2,7 @@ package com.stockeate.api.dominio.sesiones.service;
 
 import org.springframework.stereotype.Service;
 
-import com.stockeate.api.parametros.ApiConstants;
+import com.stockeate.api.parametros.Constantes;
 import com.stockeate.api.redis.RedisKeys;
 import com.stockeate.api.redis.RedisService;
 
@@ -16,8 +16,8 @@ public class LoginAttemptsService {
     
     public void registrarIntento (String ip) {
         String key = RedisKeys.login_attempts + ip;
-        Long intentos = redisService.increment(key, ApiConstants.TIEMPO_INTENTOS);
-        if (intentos >= ApiConstants.MAX_INTENTOS_LOGIN)
+        Long intentos = redisService.increment(key, Constantes.TIEMPO_INTENTOS);
+        if (intentos >= Constantes.MAX_INTENTOS_LOGIN)
             bloquearUsuario(ip);
     }
 
@@ -28,7 +28,7 @@ public class LoginAttemptsService {
 
     public void bloquearUsuario(String ip) {
         String key = RedisKeys.blocked_ips + ip;
-        redisService.set(key, "block", ApiConstants.TIEMPO_BLOQUEO_IP);
+        redisService.set(key, "block", Constantes.TIEMPO_BLOQUEO_IP);
     }
 
     public boolean estaBloqueada(String ip) {

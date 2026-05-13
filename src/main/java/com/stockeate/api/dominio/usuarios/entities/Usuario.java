@@ -26,8 +26,7 @@ public class Usuario implements UserDetails{
     @Column(name = "usuario_id")
     private Long id;
 
-    //FIXME resolver limitante de unicidad en los correos
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = false, length = 255)
     private String email;
     
     @Column(name = "nombre_completo", length = 100)
