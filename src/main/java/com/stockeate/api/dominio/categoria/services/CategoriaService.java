@@ -24,8 +24,6 @@ public class CategoriaService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
 
-    //find por desc y negocio
-
     public Categoria findById (Negocio negocio, Long id) {
         return categoriaRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
             .orElseThrow(() -> new BusinessException("Categoria no encontrada con id " + id));

@@ -1,5 +1,7 @@
 package com.stockeate.api.dominio.clientes.entities;
 
+import java.time.LocalDate;
+
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 
 import jakarta.persistence.*;
@@ -22,6 +24,12 @@ public class Cliente {
 
     @Column(length = 20)
     private String telefono;
+
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDate fechaCreacion;
+
+    @Column(nullable = false)
+    private Boolean activo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "negocio_id")
