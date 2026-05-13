@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.categoria.services;
 
+import com.stockeate.api.dominio.productos.repositories.ProductoRepository;
 import java.time.LocalDate;
 
 import org.springframework.data.domain.*;
@@ -11,7 +12,6 @@ import com.stockeate.api.dominio.categoria.dtos.service.UpdateCategoriaRequest;
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.categoria.repositories.CategoriaRepository;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
-import com.stockeate.api.dominio.productos.services.ProductoService;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class CategoriaService {
 
+    private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
-    private final ProductoService productoService;
 
     //find por desc y negocio
 
     public Categoria findById (Negocio negocio, Long id) {
-        return categoriaRepository.findByIdAndNegocioAndActivoTrue(negocio, id)
+        return categoriaRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
             .orElseThrow(() -> new BusinessException("Categoria no encontrada con id " + id));
     }
 
@@ -37,7 +37,7 @@ public class CategoriaService {
 
     @Transactional
     public Categoria create (Negocio negocio, CreateCategoriaRequest request) {
-        if (categoriaRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion()))
+        if (categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
             throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
 
         Categoria categoria = request.toEntity();
@@ -51,12 +51,12 @@ public class CategoriaService {
 
     @Transactional
     public Categoria update (Negocio negocio, Long id, UpdateCategoriaRequest request) {
-        if (categoriaRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion()))
+        if (categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
             throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
 
         Categoria categoria = findById(negocio, id);
 
-        if (request.hasChanges(categoria))
+        if (!request.hasChanges(categoria))
             throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
 
         return categoriaRepository.save(request.update(categoria));
@@ -66,7 +66,7 @@ public class CategoriaService {
     public void deactivate (Negocio negocio, Long id) {
         Categoria categoria = findById(negocio, id);
         categoria.setActivo(false);
-        productoService.removerCategoria(id);
+        productoRepository.clearCategoria(id);
         categoriaRepository.save(categoria);
     } 
 

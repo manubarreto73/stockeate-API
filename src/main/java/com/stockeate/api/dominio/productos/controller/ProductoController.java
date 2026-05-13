@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,19 +52,18 @@ public class ProductoController {
     }
 
     @GetMapping("/{categoriaId}")
-    public ResponseEntity<Page<ProductoResponse>> getAll(
+    public ResponseEntity<Page<ProductoResponse>> getByCategoria(
         @AuthenticationPrincipal Usuario autenticado,
-        @RequestParam Long categoriaId,
+        @PathVariable Long categoriaId,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "fechaCreacion") String sortBy,
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
-
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(productoService.getAll(autenticado.getNegocio(), pageable));
+            .body(productoService.getByCategoria(autenticado.getNegocio(), categoriaId, pageable));
     }
 
     @PostMapping

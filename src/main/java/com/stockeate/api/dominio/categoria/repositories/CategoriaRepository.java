@@ -12,8 +12,8 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long>  {
     
     Page<Categoria> findByNegocioAndActivoTrue(Negocio negocio, Pageable pageable);
 
-    Optional<Categoria> findByIdAndNegocioAndActivoTrue(Negocio negocio, Long id);
+    Optional<Categoria> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
 
-    Boolean existsByDescripcionAndNegocioAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
 
 }

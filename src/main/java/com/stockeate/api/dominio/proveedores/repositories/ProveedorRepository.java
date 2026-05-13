@@ -12,8 +12,8 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, Long>  {
     
     Page<Proveedor> findByNegocioAndActivoTrue(Negocio negocio, Pageable pageable);
 
-    Optional<Proveedor> findByIdAndActivoTrueAndNegocio(Negocio negocio, Long id);
+    Optional<Proveedor> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
 
-    Boolean existsByDescripcionAndNegocioAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
 
 }

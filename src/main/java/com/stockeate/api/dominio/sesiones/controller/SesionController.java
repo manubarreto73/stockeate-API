@@ -82,7 +82,6 @@ public class SesionController {
         } 
         catch (BadCredentialsException e) {
             loginAttemptsService.registrarIntento(ip);
-            System.out.print("registre");
             throw e;
         }  
     }

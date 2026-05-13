@@ -30,10 +30,10 @@ public class ProductoResponse {
             .stock(producto.getStock())
             .precio(precio.getMonto())
             .fechaCreacion(producto.getFechaCreacion())
-            .categoriaId(producto.getCategoria().getId())
-            .descCategoria(producto.getCategoria().getDescripcion())
-            .proveedorId(producto.getProveedor().getId())
-            .descProveedor(producto.getProveedor().getDescripcion())
+            .categoriaId(producto.getCategoria() == null ? 0 : producto.getCategoria().getId())
+            .descCategoria(producto.getCategoria() == null ? "" : producto.getCategoria().getDescripcion())
+            .proveedorId(producto.getProveedor() == null ? 0 : producto.getProveedor().getId())
+            .descProveedor(producto.getProveedor() == null ? "" : producto.getProveedor().getDescripcion())
             .build();
     }
 

@@ -17,7 +17,6 @@ public class LoginAttemptsService {
     public void registrarIntento (String ip) {
         String key = RedisKeys.login_attempts + ip;
         Long intentos = redisService.increment(key, ApiConstants.TIEMPO_INTENTOS);
-        System.out.print(intentos);
         if (intentos >= ApiConstants.MAX_INTENTOS_LOGIN)
             bloquearUsuario(ip);
     }

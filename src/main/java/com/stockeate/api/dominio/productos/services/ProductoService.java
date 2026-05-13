@@ -33,7 +33,7 @@ public class ProductoService {
     private final PrecioService precioService;
     
     public Producto findById (Negocio negocio, Long id) {
-        return productoRepository.findByIdAndNegocioAndActivoTrue(negocio, id)
+        return productoRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
             .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
     }
 
@@ -50,7 +50,7 @@ public class ProductoService {
 
     @Transactional
     public ProductoResponse create (Negocio negocio, CreateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
-        if (productoRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
+        if (productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
         
@@ -61,20 +61,23 @@ public class ProductoService {
         producto.setStock(request.getStock() != null ? request.getStock() : 0);
         producto.setFechaCreacion(LocalDate.now());
 
-        precioService.asignarPrecio(producto, precio);
-
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
 
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
+        productoRepository.save(producto);
+
+        precioService.asignarPrecio(producto, precio);
+
+        return ProductoResponse.from(producto, precioService.precioActual(producto));
     }
 
     @Transactional
     public ProductoResponse update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
-        if (productoRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
+        //FIXME - No siempre voy a querer actualizar la descripcion (excluir este elemento en la búsqueda)
+        if (productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
         
@@ -82,16 +85,18 @@ public class ProductoService {
 
         producto = request.update(producto);
 
-        if (precio != null && precio != precioService.precioActual(producto).getMonto())
-            precioService.asignarPrecio(producto, precio);
-
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
 
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
+        productoRepository.save(producto);
+
+        if (precio != null && precio != precioService.precioActual(producto).getMonto())
+            precioService.asignarPrecio(producto, precio);
+
+        return ProductoResponse.from(producto, precioService.precioActual(producto));
     }
 
     @Transactional

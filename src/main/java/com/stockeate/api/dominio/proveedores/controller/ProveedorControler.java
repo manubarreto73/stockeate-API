@@ -37,13 +37,12 @@ public class ProveedorControler {
     public ResponseEntity<Page<ProveedorResponse>> getAll(
         @AuthenticationPrincipal Usuario autenticado,
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "fechaCreacion") String sortBy,
+        @RequestParam(defaultValue = "descripcion") String sortBy,
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, ApiConstants.PAGE_SIZE, sort);
         Page<Proveedor> proveedores = proveedorService.getAll(autenticado.getNegocio(), pageable);
-
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(proveedores.map(ProveedorResponse::from));
@@ -58,6 +57,7 @@ public class ProveedorControler {
             autenticado.getNegocio(), 
             CreateProveedorRequest.from(request.toEntity())
         );
+        //FIXME - Falta campo opcional telefono
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ProveedorResponse.from(proveedor));
@@ -73,6 +73,7 @@ public class ProveedorControler {
             request.getId(),
             UpdateProveedorRequest.from(request.toEntity())
         );
+        //FIXME - Falta campo opcional telefono
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ProveedorResponse.from(proveedor));

@@ -21,6 +21,7 @@ public class UpdateProductoRequest {
     }
 
     public static UpdateProductoRequest from(Producto producto) {
+        
         return UpdateProductoRequest.builder()
             .descripcion(producto.getDescripcion())
             .build();

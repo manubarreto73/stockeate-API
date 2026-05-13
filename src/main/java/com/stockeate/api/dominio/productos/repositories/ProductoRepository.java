@@ -18,9 +18,9 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     Page<Producto> findByActivoTrueAndNegocioAndCategoria(Negocio negocio, Categoria categoria, Pageable pageable);
 
-    Optional<Producto> findByIdAndNegocioAndActivoTrue(Negocio negocio, Long id);
+    Optional<Producto> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
 
-    Boolean existsByDescripcionAndNegocioAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
 
     @Modifying
     @Query("UPDATE Producto p SET p.categoria = null WHERE p.categoria.id = :categoriaId")

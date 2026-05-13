@@ -20,7 +20,7 @@ public class ProveedorService {
     private final ProveedorRepository proveedorRepository;
     
     public Proveedor findById (Negocio negocio, Long id) {
-        return proveedorRepository.findByIdAndActivoTrueAndNegocio(negocio, id)
+        return proveedorRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
             .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con id: " + id));
     }
 
@@ -30,7 +30,7 @@ public class ProveedorService {
 
     @Transactional
     public Proveedor create (Negocio negocio, CreateProveedorRequest request) {
-        if (proveedorRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
+        if (proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un proveedor con la descripcion " + request.getDescripcion());
         }
         
@@ -44,7 +44,7 @@ public class ProveedorService {
 
     @Transactional
     public Proveedor update (Negocio negocio, Long id, UpdateProveedorRequest request) {
-        if (proveedorRepository.existsByDescripcionAndNegocioAndActivoTrue(negocio, request.getDescripcion())) {
+        if (proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un proveedor con la descripcion " + request.getDescripcion());
         }
         

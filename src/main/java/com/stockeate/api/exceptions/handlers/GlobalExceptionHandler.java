@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.TransientObjectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -61,6 +62,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(404, e.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(TransientObjectException.class)
+    public ResponseEntity<ErrorResponse> handleTransientObject(TransientObjectException e) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(Exception.class)
