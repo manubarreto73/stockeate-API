@@ -24,6 +24,10 @@ public class Precio {
     private BigDecimal monto;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TipoPrecio tipo;
+
+    @Column(nullable = false)
     private LocalDateTime desde;
 
     @Column()

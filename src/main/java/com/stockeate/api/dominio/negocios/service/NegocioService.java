@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.negocios.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class NegocioService {
         Parametros parametros = parametrosService.createDefault();
 
         negocio.setParametros(parametros);        
-        negocio.setFechaCreacion(LocalDate.now());
+        negocio.setFechaCreacion(LocalDateTime.now());
         negocio.setActivo(true);
 
         return negocioRepository.save(negocio);

@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.categoria.dtos;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 
@@ -13,7 +13,7 @@ public class CategoriaResponse {
     
     private Long id;
     private String descripcion;
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     public static CategoriaResponse from(Categoria categoria) {
         return CategoriaResponse.builder()

@@ -21,11 +21,11 @@ public class ItemCompra {
     @Column(nullable = false)
     private Integer cantidad;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "precio_id")
     private Precio precio;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "producto_id")
     private Producto producto;
 

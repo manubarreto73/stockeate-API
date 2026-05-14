@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.productos.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
@@ -31,7 +31,7 @@ public class Producto {
     private Integer stock;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;

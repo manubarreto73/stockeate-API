@@ -1,6 +1,5 @@
 package com.stockeate.api.dominio.usuarios.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.*;
@@ -59,7 +58,7 @@ public class UsuarioService implements UserDetailsService{
         usuario.setNegocio(negocio);
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setActivo(true);
-        usuario.setFechaCreacion(LocalDate.now());
+        usuario.setFechaCreacion(LocalDateTime.now());
         usuario.setRol(RolUsuario.ADMIN);
 
         return usuarioRepository.save(usuario);
@@ -75,7 +74,7 @@ public class UsuarioService implements UserDetailsService{
         usuario.setNegocio(negocio);
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
         usuario.setActivo(true);
-        usuario.setFechaCreacion(LocalDate.now());
+        usuario.setFechaCreacion(LocalDateTime.now());
         usuario.setRol(RolUsuario.EMPLEADO);
 
         return usuarioRepository.save(usuario);

@@ -1,7 +1,7 @@
 package com.stockeate.api.dominio.productos.services;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.categoria.services.CategoriaService;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
+import com.stockeate.api.dominio.precios.entities.TipoPrecio;
 import com.stockeate.api.dominio.precios.services.PrecioService;
 import com.stockeate.api.dominio.productos.dtos.ProductoResponse;
 import com.stockeate.api.dominio.productos.dtos.service.CreateProductoRequest;
@@ -39,13 +40,13 @@ public class ProductoService {
 
     public Page<ProductoResponse> getAll (Negocio negocio, Pageable pageable) {
         Page<Producto> productos = productoRepository.findByActivoTrueAndNegocio(negocio, pageable);
-        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto)));
+        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA)));
     }
 
     public Page<ProductoResponse> getByCategoria (Negocio negocio, Long categoriaId, Pageable pageable) {
         Categoria categoria = categoriaService.findById(negocio, categoriaId);
         Page<Producto> productos = productoRepository.findByActivoTrueAndNegocioAndCategoria(negocio, categoria, pageable);
-        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto)));
+        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA)));
     }
 
     @Transactional
@@ -59,7 +60,7 @@ public class ProductoService {
         producto.setNegocio(negocio);
         producto.setActivo(true);
         producto.setStock(request.getStock() != null ? request.getStock() : 0);
-        producto.setFechaCreacion(LocalDate.now());
+        producto.setFechaCreacion(LocalDateTime.now());
 
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
@@ -69,9 +70,9 @@ public class ProductoService {
 
         productoRepository.save(producto);
 
-        precioService.asignarPrecio(producto, precio);
+        precioService.asignarPrecio(producto, precio, TipoPrecio.VENTA);
 
-        return ProductoResponse.from(producto, precioService.precioActual(producto));
+        return ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA));
     }
 
     @Transactional
@@ -92,10 +93,10 @@ public class ProductoService {
 
         productoRepository.save(producto);
 
-        if (precio != null && precio != precioService.precioActual(producto).getMonto())
-            precioService.asignarPrecio(producto, precio);
+        if (precio != null && precio != precioService.precioActual(producto, TipoPrecio.VENTA).getMonto())
+            precioService.asignarPrecio(producto, precio, TipoPrecio.VENTA);
 
-        return ProductoResponse.from(producto, precioService.precioActual(producto));
+        return ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA));
     }
 
     @Transactional
@@ -129,7 +130,7 @@ public class ProductoService {
         Categoria categoria = categoriaService.findById(negocio, idCategoria);
         Producto producto = findById(negocio, id);
         producto.setCategoria(categoria);
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto, TipoPrecio.VENTA));
     }
 
     @Transactional
@@ -137,7 +138,7 @@ public class ProductoService {
         Proveedor proveedor = proveedorService.findById(negocio, idProveedor);
         Producto producto = findById(negocio, id);
         producto.setProveedor(proveedor);
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto));
+        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto, TipoPrecio.VENTA));
     }
 
     @Transactional

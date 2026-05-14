@@ -1,6 +1,7 @@
 package com.stockeate.api.dominio.ventas.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.formasDePago.entities.FormaDePago;
@@ -24,6 +25,9 @@ public class Venta {
 
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
+
+    @OneToMany(mappedBy = "venta", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<ItemVenta> items;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cliente_id")

@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.clientes.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class ClienteService {
         Cliente cliente = request.toEntity();
 
         cliente.setNegocio(negocio);
-        cliente.setFechaCreacion(LocalDate.now());
+        cliente.setFechaCreacion(LocalDateTime.now());
         cliente.setActivo(true);
 
         return clienteRepository.save(cliente);

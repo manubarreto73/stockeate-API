@@ -1,6 +1,7 @@
 package com.stockeate.api.dominio.compras.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
@@ -20,10 +21,19 @@ public class Compra {
     @Column(name = "compra_id")
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate fecha;
+    @Column(name = "fecha_carga", nullable = false)
+    private LocalDateTime fechaCreacion;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Column(nullable = false)
+    private Boolean recibida;
+
+    @Column(name = "fecha_recepcion")
+    private LocalDateTime fechaRecepcion;
+
+    @OneToMany(mappedBy = "compra", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<ItemCompra> items;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "usuario_id")
     private Usuario compradoPor;
 

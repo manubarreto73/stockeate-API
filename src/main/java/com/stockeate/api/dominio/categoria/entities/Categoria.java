@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.categoria.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
@@ -28,7 +28,7 @@ public class Categoria {
     private String descripcion;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;

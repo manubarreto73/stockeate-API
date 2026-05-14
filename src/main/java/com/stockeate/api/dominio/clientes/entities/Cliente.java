@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.clientes.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 
@@ -26,7 +26,7 @@ public class Cliente {
     private String telefono;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;

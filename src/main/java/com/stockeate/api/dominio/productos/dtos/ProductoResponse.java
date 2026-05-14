@@ -1,7 +1,7 @@
 package com.stockeate.api.dominio.productos.dtos;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.precios.entities.Precio;
 import com.stockeate.api.dominio.productos.entities.Producto;
@@ -17,7 +17,7 @@ public class ProductoResponse {
     private String descProducto;
     private Integer stock;
     private BigDecimal precio;
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
     private Long categoriaId;
     private String descCategoria;
     private Long proveedorId;

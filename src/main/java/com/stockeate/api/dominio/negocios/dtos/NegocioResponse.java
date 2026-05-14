@@ -1,6 +1,6 @@
 package com.stockeate.api.dominio.negocios.dtos;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 
@@ -15,7 +15,7 @@ public class NegocioResponse {
     
     private String nombreNegocio;
 
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     public static NegocioResponse from(Negocio negocio) {
         return NegocioResponse.builder()

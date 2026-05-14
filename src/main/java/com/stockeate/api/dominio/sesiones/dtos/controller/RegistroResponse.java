@@ -1,6 +1,5 @@
 package com.stockeate.api.dominio.sesiones.dtos.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.negocios.entities.Negocio;
@@ -17,13 +16,13 @@ public class RegistroResponse {
     
     private Long negocioId;
     private String nombreNegocio;
-    private LocalDate fechaCreacionNegocio;
+    private LocalDateTime fechaCreacionNegocio;
 
     private Long usuarioId;
     private String email;
     private String nombreCompleto;
     private LocalDateTime ultimoAcceso;
-    private LocalDate fechaCreacionUsuario;
+    private LocalDateTime fechaCreacionUsuario;
     private RolUsuario rol;
 
     public static RegistroResponse from(RegistrarNegocioResponse registroResponse) {

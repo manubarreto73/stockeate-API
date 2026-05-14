@@ -23,4 +23,8 @@ public class Parametros {
     @Column(nullable = false)
     private Boolean exigirFormaDePago;
 
+    //FIXME - No dejar vender cuando el stock no alcanza
+
+    //FIXME - permisos de los empleados (modificar abm, cargar compras, etc)
+
 }

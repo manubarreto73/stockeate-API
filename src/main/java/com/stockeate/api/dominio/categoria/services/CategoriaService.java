@@ -1,7 +1,7 @@
 package com.stockeate.api.dominio.categoria.services;
 
 import com.stockeate.api.dominio.productos.repositories.ProductoRepository;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class CategoriaService {
         Categoria categoria = request.toEntity();
 
         categoria.setNegocio(negocio);
-        categoria.setFechaCreacion(LocalDate.now());
+        categoria.setFechaCreacion(LocalDateTime.now());
         categoria.setActivo(true);
 
         return categoriaRepository.save(categoria);

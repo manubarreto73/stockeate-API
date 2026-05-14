@@ -3,7 +3,6 @@ package com.stockeate.api.dominio.usuarios.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +38,7 @@ public class Usuario implements UserDetails{
     private LocalDateTime ultimoAcceso;
 
     @Column(name = "fecha_creacion", nullable = false)
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(nullable = false)
     private Boolean activo;
