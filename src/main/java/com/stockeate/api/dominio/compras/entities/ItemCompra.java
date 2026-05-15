@@ -29,7 +29,7 @@ public class ItemCompra {
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "compra_id")
     private Compra compra;
 

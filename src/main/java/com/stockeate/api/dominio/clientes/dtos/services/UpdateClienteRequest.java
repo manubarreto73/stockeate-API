@@ -23,8 +23,8 @@ public class UpdateClienteRequest {
                 telefono.equals(cliente.getTelefono());
     }
 
-    public static CreateClienteRequest from (Cliente cliente) {
-        return CreateClienteRequest.builder()
+    public static UpdateClienteRequest from (Cliente cliente) {
+        return UpdateClienteRequest.builder()
             .nombreCompleto(cliente.getNombreCompleto())
             .telefono(cliente.getTelefono())
             .build();

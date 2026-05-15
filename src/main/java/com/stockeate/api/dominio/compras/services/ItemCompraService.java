@@ -32,6 +32,9 @@ public class ItemCompraService {
         if (itemCompraRepository.existsByCompraAndProducto(compra, producto))
             throw new BusinessException("Ya existe ese producto cargado en otro item de la compra");
 
+        if (cantidad <= 0)
+            throw new BusinessException("La cantidad debe ser mayor a 0");
+
         Precio precio = precioService.precioActual(producto, TipoPrecio.COMPRA);
 
         ItemCompra item = ItemCompra.builder()
@@ -46,6 +49,9 @@ public class ItemCompraService {
 
     @Transactional
     public ItemCompra editItem(Long id, Integer cantidad) {
+        if (cantidad <= 0)
+            throw new BusinessException("La cantidad debe ser mayor a 0");
+
         ItemCompra item = findById(id);
         item.setCantidad(cantidad);
         return itemCompraRepository.save(item);

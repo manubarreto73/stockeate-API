@@ -8,13 +8,14 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.stockeate.api.dominio.compras.dtos.services.CreateCompraRequest;
+import com.stockeate.api.dominio.compras.dtos.commands.CreateCompraCommand;
+import com.stockeate.api.dominio.compras.dtos.request.RegisterItemRequest;
 import com.stockeate.api.dominio.compras.entities.Compra;
 import com.stockeate.api.dominio.compras.entities.ItemCompra;
 import com.stockeate.api.dominio.compras.repositories.CompraRepository;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
+import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.productos.services.ProductoService;
-import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
 
 import lombok.RequiredArgsConstructor;
@@ -38,20 +39,19 @@ public class CompraService {
     }
 
     @Transactional
-    public Compra create (Negocio negocio, Usuario usuarioActual, CreateCompraRequest request) {
+    public Compra create (CreateCompraCommand request) {
         Compra compra = request.toEntity();
 
-        compra.setNegocio(negocio);
         compra.setFechaCreacion(LocalDateTime.now());
-        compra.setCompradoPor(usuarioActual);
         compra.setRecibida(false);
         
         compraRepository.save(compra);
 
         List<ItemCompra> items = new ArrayList<ItemCompra>();
 
-        for (ItemCompra item : request.getItems()) {
-            ItemCompra itemNuevo = itemCompraService.addItem(compra, item.getProducto(), item.getCantidad());
+        for (RegisterItemRequest item : request.getItems()) {
+            Producto producto = productoService.findById(request.getNegocio(), item.getProductoId());
+            ItemCompra itemNuevo = itemCompraService.addItem(compra, producto, item.getCantidad());
 
             items.add(itemNuevo);
         }
@@ -82,6 +82,5 @@ public class CompraService {
         Compra compra = findById(negocio, id);
         compraRepository.delete(compra);
     } 
-
 
 }
