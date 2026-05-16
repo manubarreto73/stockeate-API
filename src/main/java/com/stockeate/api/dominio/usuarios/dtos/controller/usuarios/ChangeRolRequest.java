@@ -11,7 +11,7 @@ import lombok.*;
 public class ChangeRolRequest {
     
     @NotNull
-    private Long id;
+    private Long idUsuario;
 
     @NotNull
     private RolUsuario rol;

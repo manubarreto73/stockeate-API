@@ -90,7 +90,7 @@ public class ProductoController {
     ) {
         ProductoResponse producto = productoService.update(
             autenticado.getNegocio(),
-            request.getId(),
+            request.getIdProducto(),
             UpdateProductoRequest.from(request.toEntity()), 
             request.getCategoriaId(), 
             request.getProveedorId(),
@@ -106,7 +106,7 @@ public class ProductoController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteProductoRequest request
     ) {
-        productoService.deactivate(autenticado.getNegocio(), request.getId());
+        productoService.deactivate(autenticado.getNegocio(), request.getIdProducto());
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(null);

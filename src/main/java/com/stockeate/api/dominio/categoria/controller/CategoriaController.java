@@ -73,7 +73,7 @@ public class CategoriaController {
     ) {
         Categoria categoriaRequest = request.toEntity();
 
-        Categoria categoria = categoriaService.update(autentiado.getNegocio(), request.getId(), UpdateCategoriaRequest.from(categoriaRequest));
+        Categoria categoria = categoriaService.update(autentiado.getNegocio(), request.getIdCategoria(), UpdateCategoriaRequest.from(categoriaRequest));
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -86,7 +86,7 @@ public class CategoriaController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteCategoriaRequest request
     ) {
-        categoriaService.deactivate(autenticado.getNegocio(), request.getId());
+        categoriaService.deactivate(autenticado.getNegocio(), request.getIdCategoria());
         return ResponseEntity.ok().build();
     }
     

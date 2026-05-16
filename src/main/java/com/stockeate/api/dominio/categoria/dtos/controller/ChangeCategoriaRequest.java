@@ -13,7 +13,7 @@ import lombok.*;
 public class ChangeCategoriaRequest {
     
     @NotNull
-    private Long id;
+    private Long idCategoria;
 
     @NotBlank
     @Size(max = 100, message = "El nombre de la categoria no puede superar los 100 caracteres")

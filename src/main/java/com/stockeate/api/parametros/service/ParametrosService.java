@@ -25,7 +25,11 @@ public class ParametrosService {
     public Parametros createDefault () {
         Parametros parametros = Parametros.builder()
             .unaCompraDistintosProveedores(true)
-            .exigirFormaDePago(false)
+            .exigirClienteAlCargarVenta(false)
+            .exigirFormaDePagoAlCargarVenta(false)
+            .permitirVenderSinStock(false)
+            .empleadoPuedeCargarCompras(true)
+            .empleadoPuedeUtilizarAbm(false)
             .build();
 
         return parametrosRepository.save(parametros);
@@ -39,9 +43,37 @@ public class ParametrosService {
     }
 
     @Transactional
-    public Parametros exigirFormaDePago(Long id, Boolean activo) {
+    public Parametros exigirClienteEnVentas(Long id, Boolean activo) {
         Parametros parametros = getById(id);
-        parametros.setExigirFormaDePago(activo);
+        parametros.setExigirClienteAlCargarVenta(activo);
+        return parametrosRepository.save(parametros);
+    }
+
+    @Transactional
+    public Parametros exigirFormaDePagoEnVentas(Long id, Boolean activo) {
+        Parametros parametros = getById(id);
+        parametros.setExigirFormaDePagoAlCargarVenta(activo);
+        return parametrosRepository.save(parametros);
+    }
+
+    @Transactional
+    public Parametros venderSinStock(Long id, Boolean activo) {
+        Parametros parametros = getById(id);
+        parametros.setPermitirVenderSinStock(activo);
+        return parametrosRepository.save(parametros);
+    }
+
+    @Transactional
+    public Parametros permisoEmpleadoCargarCompras(Long id, Boolean activo) {
+        Parametros parametros = getById(id);
+        parametros.setEmpleadoPuedeCargarCompras(activo);
+        return parametrosRepository.save(parametros);
+    }
+
+    @Transactional
+    public Parametros permisoEmpleadoABM(Long id, Boolean activo) {
+        Parametros parametros = getById(id);
+        parametros.setEmpleadoPuedeUtilizarAbm(activo);
         return parametrosRepository.save(parametros);
     }
 

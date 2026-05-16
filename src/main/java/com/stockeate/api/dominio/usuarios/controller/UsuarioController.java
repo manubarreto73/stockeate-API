@@ -71,7 +71,7 @@ public class UsuarioController {
     ) {
         Usuario usuarioRequest = request.toEntity();
 
-        Usuario usuario = usuarioService.update(autentiado.getNegocio(), request.getId(), UpdateUsuarioRequest.from(usuarioRequest));
+        Usuario usuario = usuarioService.update(autentiado.getNegocio(), request.getIdUsuario(), UpdateUsuarioRequest.from(usuarioRequest));
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -84,7 +84,7 @@ public class UsuarioController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteUsuarioRequest request
     ) {
-        usuarioService.deactivate(autenticado.getNegocio(), request.getId());
+        usuarioService.deactivate(autenticado.getNegocio(), request.getIdUsuario());
         return ResponseEntity.ok().build();
     }
 
@@ -94,7 +94,7 @@ public class UsuarioController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody ChangeRolRequest request
     ) {
-        Usuario usuario = usuarioService.changeRol(autenticado.getNegocio(), request.getId(), request.getRol());
+        Usuario usuario = usuarioService.changeRol(autenticado.getNegocio(), request.getIdUsuario(), request.getRol());
         
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -106,9 +106,9 @@ public class UsuarioController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody ChangePassRequest request
     ) {
-        isUserOrHimself(autenticado, request.getId());
+        isUserOrHimself(autenticado, request.getIdUsuario());
 
-        Usuario usuario = usuarioService.changePassword(autenticado.getNegocio(), request.getId(), request.getPassword());
+        Usuario usuario = usuarioService.changePassword(autenticado.getNegocio(), request.getIdUsuario(), request.getPassword());
         
         return ResponseEntity
             .status(HttpStatus.OK)

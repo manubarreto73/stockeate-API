@@ -9,5 +9,5 @@ import lombok.*;
 public class DeleteUsuarioRequest {
     
     @NotNull
-    private Long id;
+    private Long idUsuario;
 }

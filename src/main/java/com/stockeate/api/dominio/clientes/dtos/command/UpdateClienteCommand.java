@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.clientes.dtos.services;
+package com.stockeate.api.dominio.clientes.dtos.command;
 
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class UpdateClienteRequest {
+public class UpdateClienteCommand {
     
     private String nombreCompleto;
     private String telefono;
@@ -23,8 +23,8 @@ public class UpdateClienteRequest {
                 telefono.equals(cliente.getTelefono());
     }
 
-    public static UpdateClienteRequest from (Cliente cliente) {
-        return UpdateClienteRequest.builder()
+    public static UpdateClienteCommand from (Cliente cliente) {
+        return UpdateClienteCommand.builder()
             .nombreCompleto(cliente.getNombreCompleto())
             .telefono(cliente.getTelefono())
             .build();

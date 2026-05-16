@@ -66,7 +66,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody RegisterCompraRequest request
     ) {
-        Compra compra = compraService.create(new CreateCompraCommand(autenticado.getNegocio(), autenticado, request.getItems()));
+        Compra compra = compraService.create(new CreateCompraCommand(autenticado.getNegocio(), autenticado, request.getFechaRecepcion(), request.getItems()));
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(CompraResponse.from(compra));
@@ -79,7 +79,7 @@ public class ComprasController {
     ) {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(CompraResponse.from(compraService.marcarComoRecibida(autenticado.getNegocio(), request.getId())));
+            .body(CompraResponse.from(compraService.marcarComoRecibida(autenticado.getNegocio(), request.getIdCompra())));
     }
 
     @PostMapping("/items")

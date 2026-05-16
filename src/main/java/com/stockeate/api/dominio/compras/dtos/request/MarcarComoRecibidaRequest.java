@@ -9,6 +9,6 @@ import lombok.*;
 public class MarcarComoRecibidaRequest {
     
     @NotNull
-    private Long id;
+    private Long idCompra;
 
 }

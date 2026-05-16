@@ -14,7 +14,7 @@ import lombok.*;
 public class ChangeUsuarioRequest {
     
     @NotNull
-    private Long id;
+    private Long idUsuario;
 
     @NotBlank
     @Size(max = 100, message = "El nombre de usuario no puede superar los 100 caracteres")

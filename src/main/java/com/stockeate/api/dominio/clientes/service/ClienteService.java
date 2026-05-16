@@ -6,8 +6,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.stockeate.api.dominio.clientes.dtos.services.CreateClienteRequest;
-import com.stockeate.api.dominio.clientes.dtos.services.UpdateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.command.CreateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.command.UpdateClienteCommand;
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.clientes.repositories.ClienteRepository;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
@@ -46,7 +46,7 @@ public class ClienteService {
     }
 
     @Transactional
-    public Cliente update (Negocio negocio, Long id, UpdateClienteRequest request) {
+    public Cliente update (Negocio negocio, Long id, UpdateClienteCommand request) {
         Cliente cliente = findById(negocio, id);
 
         if (!cliente.getNombreCompleto().equals(request.getNombreCompleto()) && clienteRepository.existsByNegocioAndNombreCompletoAndActivoTrue(negocio, request.getNombreCompleto()))

@@ -29,7 +29,6 @@ public class Compra {
 
     @Column(name = "fecha_recepcion")
     private LocalDateTime fechaRecepcion;
-    //FIXME - fijarse si agregar una fecha estimada de recepcion o usar esta cuando no esté recibida aún
 
     @OneToMany(mappedBy = "compra", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ItemCompra> items;

@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.clientes.dtos.controllers;
+package com.stockeate.api.dominio.clientes.dtos.request;
 
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 
@@ -10,10 +10,10 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class ChangeClienteRequest {
+public class UpdateClienteRequest {
     
     @NotNull
-    private Long id;
+    private Long idCliente;
 
     @NotBlank
     @Size(max = 100, message = "El nombre del cliente no puede tener más de 100 caracteres")
@@ -29,8 +29,8 @@ public class ChangeClienteRequest {
             .build();
     }
 
-    public static ChangeClienteRequest from (Cliente cliente) {
-        return ChangeClienteRequest.builder()
+    public static UpdateClienteRequest from (Cliente cliente) {
+        return UpdateClienteRequest.builder()
             .nombreCompleto(cliente.getNombreCompleto())
             .telefono(cliente.getTelefono())
             .build();

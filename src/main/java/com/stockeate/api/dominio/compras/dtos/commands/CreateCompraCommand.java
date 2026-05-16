@@ -1,5 +1,6 @@
 package com.stockeate.api.dominio.compras.dtos.commands;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.stockeate.api.dominio.compras.dtos.request.RegisterItemRequest;
@@ -14,6 +15,7 @@ public class CreateCompraCommand {
     
     Negocio negocio;
     Usuario usuarioComprador;
+    LocalDateTime fechaRecepcion;
     List<RegisterItemRequest> items;
 
     public Compra toEntity() {

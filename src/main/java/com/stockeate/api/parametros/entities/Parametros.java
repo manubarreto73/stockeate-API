@@ -19,12 +19,30 @@ public class Parametros {
     @Column(nullable = false)
     private Boolean unaCompraDistintosProveedores;
 
-    //Exigir que al cargar una venta se ingrese su forma de pago. Depende de si al negocio le interesa tener estadísticas en base a eso
+    //Exigir que al cargar una venta se ingrese su forma de pago. 
+    //Depende de si al negocio le interesa tener estadísticas en base a eso
     @Column(nullable = false)
-    private Boolean exigirFormaDePago;
+    private Boolean exigirFormaDePagoAlCargarVenta;
 
-    //FIXME - No dejar vender cuando el stock no alcanza
+    //Exigir que al cargar una venta se ingrese un cliente. 
+    //Depende de si al negocio le interesa registrar siempre sus clientes.
+    //Con negocios que trabajan por encargo suele ser necesario.
+    @Column(nullable = false)
+    private Boolean exigirClienteAlCargarVenta;
 
-    //FIXME - permisos de los empleados (modificar abm, cargar compras, etc)
+    //Permitir realizar una venta aunque el stock de alguno de los productos que conforma la misma es insuficiente
+    //Depende de si al negocio le importa tener un control exhaustivo del stock.
+    @Column(nullable = false)
+    private Boolean permitirVenderSinStock;
+
+    //FIXME - Falta implementar los chequeos de permisos en todos los controllers (una re paja)
+
+    //Permitir que los usuarios de rol empleado puedan cargar compras de stock
+    @Column(nullable = false)
+    private Boolean empleadoPuedeCargarCompras;
+
+    //Permitir que los usuarios de rol empleado puedan utilizar el ABM modificando las tablas del negocio
+    @Column(nullable = false)
+    private Boolean empleadoPuedeUtilizarAbm;
 
 }

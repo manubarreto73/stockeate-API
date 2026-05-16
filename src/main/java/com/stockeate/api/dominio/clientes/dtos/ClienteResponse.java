@@ -9,13 +9,13 @@ import lombok.*;
 @Builder
 public class ClienteResponse {
 
-    private Long id;
+    private Long idCliente;
     private String nombreCompleto;
     private String telefono;
 
     public static ClienteResponse from(Cliente cliente) {
         return ClienteResponse.builder()
-            .id(cliente.getId())
+            .idCliente(cliente.getId())
             .nombreCompleto(cliente.getNombreCompleto())
             .telefono(cliente.getTelefono())
             .build();

@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.clientes.dtos.services;
+package com.stockeate.api.dominio.clientes.dtos.command;
 
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 

@@ -15,7 +15,7 @@ import lombok.*;
 public class ChangeProductoRequest {
     
     @NotNull
-    private Long id;
+    private Long idProducto;
 
     @NotBlank
     @Size(max = 100, message = "La descripción no puede exceder los 100 caracteres")

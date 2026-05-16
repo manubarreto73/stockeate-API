@@ -1,4 +1,4 @@
-package com.stockeate.api.dominio.clientes.dtos.controllers;
+package com.stockeate.api.dominio.clientes.dtos.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -9,6 +9,6 @@ import lombok.*;
 public class DeleteClienteRequest {
     
     @NotNull
-    private Long id;
+    private Long idCliente;
 
 }

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stockeate.api.dominio.clientes.dtos.ClienteResponse;
-import com.stockeate.api.dominio.clientes.dtos.controllers.ChangeClienteRequest;
-import com.stockeate.api.dominio.clientes.dtos.controllers.DeleteClienteRequest;
-import com.stockeate.api.dominio.clientes.dtos.controllers.RegisterClienteRequest;
-import com.stockeate.api.dominio.clientes.dtos.services.CreateClienteRequest;
-import com.stockeate.api.dominio.clientes.dtos.services.UpdateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.command.CreateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.command.UpdateClienteCommand;
+import com.stockeate.api.dominio.clientes.dtos.request.UpdateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.request.DeleteClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.request.RegisterClienteRequest;
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.clientes.service.ClienteService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
@@ -67,10 +67,10 @@ public class ClienteController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponse> update (
         @AuthenticationPrincipal Usuario autentiado,
-        @Valid @RequestBody ChangeClienteRequest request
+        @Valid @RequestBody UpdateClienteRequest request
     ) {
 
-        Cliente cliente = clienteService.update(autentiado.getNegocio(), request.getId(), UpdateClienteRequest.from(request.toEntity()));
+        Cliente cliente = clienteService.update(autentiado.getNegocio(), request.getIdCliente(), UpdateClienteCommand.from(request.toEntity()));
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -83,7 +83,7 @@ public class ClienteController {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteClienteRequest request
     ) {
-        clienteService.deactivate(autenticado.getNegocio(), request.getId());
+        clienteService.deactivate(autenticado.getNegocio(), request.getIdCliente());
         return ResponseEntity.ok().build();
     }
 

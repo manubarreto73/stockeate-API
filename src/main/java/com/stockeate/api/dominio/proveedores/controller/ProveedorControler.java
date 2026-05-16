@@ -69,7 +69,7 @@ public class ProveedorControler {
     ) {
         Proveedor proveedor = proveedorService.update(
             autenticado.getNegocio(),
-            request.getId(),
+            request.getIdProveedor(),
             UpdateProveedorRequest.from(request.toEntity())
         );
         return ResponseEntity
@@ -82,7 +82,7 @@ public class ProveedorControler {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteProveedorRequest request
     ) {
-        proveedorService.deactivate(autenticado.getNegocio(), request.getId());
+        proveedorService.deactivate(autenticado.getNegocio(), request.getIdProveedor());
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(null);

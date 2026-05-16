@@ -20,6 +20,8 @@ import com.stockeate.api.dominio.productos.repositories.ProductoRepository;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 import com.stockeate.api.dominio.proveedores.services.ProveedorService;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
+import com.stockeate.api.parametros.entities.Parametros;
+import com.stockeate.api.parametros.service.ParametrosService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +34,7 @@ public class ProductoService {
     private final CategoriaService categoriaService;
     private final ProveedorService proveedorService;
     private final PrecioService precioService;
+    private final ParametrosService parametrosService;
     
     public Producto findById (Negocio negocio, Long id) {
         return productoRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
@@ -117,11 +120,12 @@ public class ProductoService {
     @Transactional
     public void reducirStock (Negocio negocio, Long id, Integer cantidad) {
         Producto producto = findById(negocio, id);
+        Parametros parametros = parametrosService.getById(negocio.getId());
 
-        if (producto.getStock() < cantidad)
+        if (!parametros.getPermitirVenderSinStock() && producto.getStock() < cantidad)
             throw new BusinessException("Stock insuficiente");
 
-        producto.setStock(producto.getStock() - cantidad);
+        producto.setStock(Math.max(0, producto.getStock() - cantidad));
         productoRepository.save(producto);
     }
 

@@ -13,7 +13,7 @@ import lombok.*;
 public class ChangeProveedorRequest {
     
     @NotNull
-    private Long id;
+    private Long idProveedor;
 
     @NotBlank
     @Size(max = 100, message = "La descripción no puede exceder los 100 caracteres")

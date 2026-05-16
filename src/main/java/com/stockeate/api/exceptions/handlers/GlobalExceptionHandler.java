@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.TransientObjectException;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -66,6 +67,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TransientObjectException.class)
     public ResponseEntity<ErrorResponse> handleTransientObject(TransientObjectException e) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(RedisConnectionFailureException.class)
+    public ResponseEntity<ErrorResponse> handleRedisFailure(RedisConnectionFailureException e) {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));

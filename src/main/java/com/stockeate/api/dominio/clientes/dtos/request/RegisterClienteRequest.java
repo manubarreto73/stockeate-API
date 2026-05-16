@@ -1,6 +1,6 @@
-package com.stockeate.api.dominio.clientes.dtos.controllers;
+package com.stockeate.api.dominio.clientes.dtos.request;
 
-import com.stockeate.api.dominio.clientes.dtos.services.CreateClienteRequest;
+import com.stockeate.api.dominio.clientes.dtos.command.CreateClienteRequest;
 import com.stockeate.api.dominio.clientes.entities.Cliente;
 
 import jakarta.validation.constraints.NotBlank;

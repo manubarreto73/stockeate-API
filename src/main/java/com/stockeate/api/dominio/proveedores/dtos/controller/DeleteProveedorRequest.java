@@ -9,6 +9,6 @@ import lombok.*;
 public class DeleteProveedorRequest {
     
     @NotNull
-    private Long id;
+    private Long idProveedor;
 
 }

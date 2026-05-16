@@ -39,18 +39,19 @@ public class CompraService {
     }
 
     @Transactional
-    public Compra create (CreateCompraCommand request) {
-        Compra compra = request.toEntity();
+    public Compra create (CreateCompraCommand command) {
+        Compra compra = command.toEntity();
 
         compra.setFechaCreacion(LocalDateTime.now());
         compra.setRecibida(false);
+        compra.setFechaRecepcion(command.getFechaRecepcion());
         
         compraRepository.save(compra);
 
         List<ItemCompra> items = new ArrayList<ItemCompra>();
 
-        for (RegisterItemRequest item : request.getItems()) {
-            Producto producto = productoService.findById(request.getNegocio(), item.getProductoId());
+        for (RegisterItemRequest item : command.getItems()) {
+            Producto producto = productoService.findById(command.getNegocio(), item.getProductoId());
             ItemCompra itemNuevo = itemCompraService.addItem(compra, producto, item.getCantidad());
 
             items.add(itemNuevo);
@@ -69,7 +70,7 @@ public class CompraService {
             throw new BusinessException("La compra ya fue recibida");
 
         for (ItemCompra item : compra.getItems()) {
-            productoService.reducirStock(negocio, item.getProducto().getId(), item.getCantidad());
+            productoService.aumentarStock(negocio, item.getProducto().getId(), item.getCantidad());
         }
 
         compra.setRecibida(true);
@@ -80,6 +81,9 @@ public class CompraService {
     @Transactional
     public void delete (Negocio negocio, Long id) {
         Compra compra = findById(negocio, id);
+        for (ItemCompra item : compra.getItems()) {
+            productoService.reducirStock(negocio, id, item.getCantidad());
+        }
         compraRepository.delete(compra);
     } 
 

@@ -11,13 +11,13 @@ import lombok.*;
 @Builder
 public class CategoriaResponse {
     
-    private Long id;
+    private Long idCategoria;
     private String descripcion;
     private LocalDateTime fechaCreacion;
 
     public static CategoriaResponse from(Categoria categoria) {
         return CategoriaResponse.builder()
-            .id(categoria.getId())
+            .idCategoria(categoria.getId())
             .descripcion(categoria.getDescripcion())
             .fechaCreacion(categoria.getFechaCreacion())
             .build();

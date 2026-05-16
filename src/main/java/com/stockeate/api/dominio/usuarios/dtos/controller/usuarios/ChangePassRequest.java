@@ -11,7 +11,7 @@ import lombok.*;
 public class ChangePassRequest {
 
     @NotNull
-    private Long id;
+    private Long idUsuario;
 
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, max = 255, message = "La contraseña debe tener entre 8 y 255 caracteres")
