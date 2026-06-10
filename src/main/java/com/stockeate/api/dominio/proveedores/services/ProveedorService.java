@@ -20,20 +20,20 @@ public class ProveedorService {
     private final ProveedorRepository proveedorRepository;
     
     public Proveedor findById (Negocio negocio, Long id) {
-        return proveedorRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
+        return proveedorRepository.findByNegocioAndId(negocio, id)
             .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con id: " + id));
     }
 
     public Page<Proveedor> getAll (Negocio negocio, Pageable pageable) {
-        return proveedorRepository.findByNegocioAndActivoTrue(negocio, pageable);
+        return proveedorRepository.findByNegocio(negocio, pageable);
     }
 
     @Transactional
     public Proveedor create (Negocio negocio, CreateProveedorRequest request) {
-        if (proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+        if (proveedorRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un proveedor con la descripcion " + request.getDescripcion());
         }
-        
+
         Proveedor proveedor = request.toEntity();
 
         proveedor.setNegocio(negocio);
@@ -46,7 +46,7 @@ public class ProveedorService {
     public Proveedor update (Negocio negocio, Long id, UpdateProveedorRequest request) {
         Proveedor proveedor = findById(negocio, id);
 
-        if (!proveedor.getDescripcion().equals(request.getDescripcion()) && proveedorRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+        if (!proveedor.getDescripcion().equals(request.getDescripcion()) && proveedorRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un proveedor con la descripcion " + request.getDescripcion());
         }
 
@@ -56,10 +56,9 @@ public class ProveedorService {
     }
 
     @Transactional
-    public Proveedor deactivate (Negocio negocio, Long id) {
+    public void deactivate (Negocio negocio, Long id) {
         Proveedor proveedor = findById(negocio, id);
-        proveedor.setActivo(false);
-        return proveedorRepository.save(proveedor);
+        proveedorRepository.delete(proveedor);
     }
 
 }

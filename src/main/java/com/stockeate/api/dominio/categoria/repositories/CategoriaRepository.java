@@ -10,10 +10,10 @@ import com.stockeate.api.dominio.negocios.entities.Negocio;
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Long>  {
     
-    Page<Categoria> findByNegocioAndActivoTrue(Negocio negocio, Pageable pageable);
+    Page<Categoria> findByNegocio(Negocio negocio, Pageable pageable);
 
-    Optional<Categoria> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
+    Optional<Categoria> findByNegocioAndId(Negocio negocio, Long id);
 
-    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcion(Negocio negocio, String descripcion);
 
 }

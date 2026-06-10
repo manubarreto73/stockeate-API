@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /tmp)",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(cd C:/Users/Administrator/AppData/Local/Temp && npm install bcryptjs 2>&1 | tail -3)",
+      "Read(//c/Users/Administrator/AppData/Local/Temp/**)",
+      "Bash(ls -la \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\\" | head -50)",
+      "Read(//c/Users/Administrator/Desktop/**)",
+      "Bash(Select-Object -First 30)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\src\\\\main\\\\resources\\\\db\\\\migration\\\\V2__seed_data.sql\", \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\src\\\\main\\\\resources\\\\db\\\\migration\\\\V3__add_subcategorias.sql\", \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\src\\\\main\\\\resources\\\\db\\\\migration\\\\V4__large_seed_data.sql\", \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\src\\\\main\\\\resources\\\\db\\\\migration\\\\V5__seed_data_complete.sql\")",
+      "Bash(mvn spring-boot:run)",
+      "Bash(Format-Table FullName)",
+      "Bash(ls \"C:\\\\Users\\\\Administrator\\\\.claude\\\\skills\" 2>/dev/null; echo \"---\"; ls \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\.claude\\\\skills\" 2>/dev/null; echo \"---project claude---\"; ls \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\Stockeate\\\\api\\\\.claude\" 2>/dev/null)",
+      "Read(//c/Users/Administrator/.claude/**)",
+      "Edit(~/.claude/skills/spring-jwt-auth-redis/**)",
+      "Bash(./mvnw.cmd -q compile -o)",
+      "Bash(./mvnw.cmd compile *)",
+      "Bash(./mvnw.cmd clean *)",
+      "Bash(./mvnw -q -o compile)",
+      "Bash(./mvnw -q -o test-compile)"
+    ]
+  }
+}

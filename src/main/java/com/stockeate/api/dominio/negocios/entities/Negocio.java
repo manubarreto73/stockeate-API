@@ -15,11 +15,16 @@ import com.stockeate.api.parametros.entities.Parametros;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "negocios")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE negocios SET activo = false WHERE negocio_id = ?")
+@SQLRestriction("activo = true")
 public class Negocio {
     
     @Id

@@ -7,11 +7,16 @@ import com.stockeate.api.dominio.negocios.entities.Negocio;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "clientes")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE clientes SET activo = false WHERE cliente_id = ?")
+@SQLRestriction("activo = true")
 public class Cliente {
     
     @Id

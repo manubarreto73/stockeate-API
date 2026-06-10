@@ -19,11 +19,6 @@ public class UpdateProveedorRequest {
         return proveedor;
     }
 
-    public Boolean hasChanges(Proveedor proveedor) {
-        return !(descripcion.equals(proveedor.getDescripcion()) ||
-                telefono.equals(proveedor.getTelefono()));
-    }
-    
     public static UpdateProveedorRequest from(Proveedor proveedor) {
         return UpdateProveedorRequest.builder()
             .descripcion(proveedor.getDescripcion())

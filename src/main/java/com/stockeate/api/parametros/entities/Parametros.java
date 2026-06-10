@@ -35,8 +35,6 @@ public class Parametros {
     @Column(nullable = false)
     private Boolean permitirVenderSinStock;
 
-    //FIXME - Falta implementar los chequeos de permisos en todos los controllers (una re paja)
-
     //Permitir que los usuarios de rol empleado puedan cargar compras de stock
     @Column(nullable = false)
     private Boolean empleadoPuedeCargarCompras;

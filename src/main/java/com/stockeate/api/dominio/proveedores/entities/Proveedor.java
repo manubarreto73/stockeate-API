@@ -5,11 +5,16 @@ import com.stockeate.api.dominio.negocios.entities.Negocio;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Table(name = "proveedores")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE proveedores SET activo = false WHERE proveedor_id = ?")
+@SQLRestriction("activo = true")
 public class Proveedor {
     
     @Id

@@ -23,17 +23,17 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
 
     public Cliente findById (Negocio negocio, Long id) {
-        return clienteRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
+        return clienteRepository.findByNegocioAndId(negocio, id)
             .orElseThrow(() -> new BusinessException("Cliente no encontrado con id " + id));
     }
 
     public Page<Cliente> getByNegocio (Negocio negocio, Pageable pageable) {
-        return clienteRepository.findByNegocioAndActivoTrue(negocio, pageable);
+        return clienteRepository.findByNegocio(negocio, pageable);
     }
 
     @Transactional
     public Cliente create (Negocio negocio, CreateClienteRequest request) {
-        if (clienteRepository.existsByNegocioAndNombreCompletoAndActivoTrue(negocio, request.getNombreCompleto()))
+        if (clienteRepository.existsByNegocioAndNombreCompleto(negocio, request.getNombreCompleto()))
             throw new BusinessException("Ya existe un cliente con el nombre " + request.getNombreCompleto());
 
         Cliente cliente = request.toEntity();
@@ -49,11 +49,8 @@ public class ClienteService {
     public Cliente update (Negocio negocio, Long id, UpdateClienteCommand request) {
         Cliente cliente = findById(negocio, id);
 
-        if (!cliente.getNombreCompleto().equals(request.getNombreCompleto()) && clienteRepository.existsByNegocioAndNombreCompletoAndActivoTrue(negocio, request.getNombreCompleto()))
+        if (!cliente.getNombreCompleto().equals(request.getNombreCompleto()) && clienteRepository.existsByNegocioAndNombreCompleto(negocio, request.getNombreCompleto()))
             throw new BusinessException("Ya existe un cliente con el nombre " + request.getNombreCompleto());
-
-        if (!request.hasChanges(cliente))
-            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
 
         return clienteRepository.save(request.update(cliente));
     }
@@ -61,8 +58,7 @@ public class ClienteService {
     @Transactional
     public void deactivate (Negocio negocio, Long id) {
         Cliente cliente = findById(negocio, id);
-        cliente.setActivo(false);
-        clienteRepository.save(cliente);
-    } 
+        clienteRepository.delete(cliente);
+    }
 
 }

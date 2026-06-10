@@ -18,11 +18,6 @@ public class UpdateClienteCommand {
         return cliente;
     } 
 
-    public Boolean hasChanges (Cliente cliente) {
-        return !(nombreCompleto.equals(cliente.getNombreCompleto())) ||
-                telefono.equals(cliente.getTelefono());
-    }
-
     public static UpdateClienteCommand from (Cliente cliente) {
         return UpdateClienteCommand.builder()
             .nombreCompleto(cliente.getNombreCompleto())

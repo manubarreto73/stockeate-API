@@ -11,7 +11,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.stockeate.api.dominio.usuarios.service.UsuarioService;
 import com.stockeate.api.exceptions.handlers.ErrorResponse;
+import com.stockeate.api.redis.RedisService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 
 import java.io.IOException;
@@ -30,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UsuarioService userDetailsService;
     private final ObjectMapper objectMapper;
+    private final RedisService redisService;
 
     @Override
     protected void doFilterInternal(
@@ -47,12 +50,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             final String token = authHeader.substring(7);
+
+            if (Boolean.TRUE.equals(redisService.exists("blacklist:" + token))) {
+                sendUnauthorized(response, "Token revocado");
+                return;
+            }
+
             final String email = jwtService.extractUsername(token);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 if (jwtService.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -60,20 +70,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         }
-        catch (JwtException e) {
-            ErrorResponse error = ErrorResponse.builder()
-                .status(HttpServletResponse.SC_UNAUTHORIZED)
-                .message("Token inválido o expirado")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-
-            response.getWriter().write(
-                objectMapper.writeValueAsString(error)
-            );
+        catch (ExpiredJwtException e) {
+            sendUnauthorized(response, "Token expirado");
         }
+        catch (JwtException e) {
+            sendUnauthorized(response, "Token inválido");
+        }
+    }
+
+    private void sendUnauthorized(HttpServletResponse response, String message) throws IOException {
+        ErrorResponse error = ErrorResponse.builder()
+            .status(HttpServletResponse.SC_UNAUTHORIZED)
+            .message(message)
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(error));
     }
 }

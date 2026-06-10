@@ -18,10 +18,6 @@ public class UpdateCategoriaRequest {
         return categoria;
     }
 
-    public Boolean hasChanges(Categoria categoria) {
-        return !(categoria.getDescripcion().equals(descripcion));
-    }
-
     public static UpdateCategoriaRequest from(Categoria categoria) {
         return UpdateCategoriaRequest.builder()
             .descripcion(categoria.getDescripcion())

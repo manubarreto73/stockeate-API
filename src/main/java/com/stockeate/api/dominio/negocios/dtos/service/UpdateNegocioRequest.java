@@ -18,10 +18,6 @@ public class UpdateNegocioRequest {
         return negocio;
     }
 
-    public Boolean hasChanges(Negocio negocio) {
-        return !negocio.getNombreNegocio().equals(nombreNegocio);
-    }
-
     public static UpdateNegocioRequest from(Negocio negocio) {
         return UpdateNegocioRequest.builder()
             .nombreNegocio(negocio.getNombreNegocio())

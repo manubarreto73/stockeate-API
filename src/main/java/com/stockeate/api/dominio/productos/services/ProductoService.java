@@ -7,8 +7,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.stockeate.api.dominio.categoria.entities.Categoria;
+import com.stockeate.api.dominio.categoria.entities.Subcategoria;
 import com.stockeate.api.dominio.categoria.services.CategoriaService;
+import com.stockeate.api.dominio.categoria.services.SubcategoriaService;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.precios.entities.TipoPrecio;
 import com.stockeate.api.dominio.precios.services.PrecioService;
@@ -17,7 +18,6 @@ import com.stockeate.api.dominio.productos.dtos.service.CreateProductoRequest;
 import com.stockeate.api.dominio.productos.dtos.service.UpdateProductoRequest;
 import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.productos.repositories.ProductoRepository;
-import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 import com.stockeate.api.dominio.proveedores.services.ProveedorService;
 import com.stockeate.api.exceptions.exceptions.BusinessException;
 import com.stockeate.api.parametros.entities.Parametros;
@@ -32,32 +32,37 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
     private final CategoriaService categoriaService;
+    private final SubcategoriaService subcategoriaService;
     private final ProveedorService proveedorService;
     private final PrecioService precioService;
     private final ParametrosService parametrosService;
     
     public Producto findById (Negocio negocio, Long id) {
-        return productoRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
+        return productoRepository.findByNegocioAndId(negocio, id)
             .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + id));
     }
 
-    public Page<ProductoResponse> getAll (Negocio negocio, Pageable pageable) {
-        Page<Producto> productos = productoRepository.findByActivoTrueAndNegocio(negocio, pageable);
-        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA)));
-    }
+    public Page<ProductoResponse> getAll (Negocio negocio, Long categoriaId, Long subcategoriaId, Long proveedorId, String busqueda, Pageable pageable) {
+        String termino = (busqueda != null && !busqueda.isBlank()) ? "%" + busqueda.toLowerCase() + "%" : null;
+        boolean soloSinCategoria = Long.valueOf(0L).equals(categoriaId);
+        Long catId = soloSinCategoria ? null : categoriaId;
 
-    public Page<ProductoResponse> getByCategoria (Negocio negocio, Long categoriaId, Pageable pageable) {
-        Categoria categoria = categoriaService.findById(negocio, categoriaId);
-        Page<Producto> productos = productoRepository.findByActivoTrueAndNegocioAndCategoria(negocio, categoria, pageable);
-        return productos.map(producto -> ProductoResponse.from(producto, precioService.precioActual(producto, TipoPrecio.VENTA)));
+        if (subcategoriaId != null && catId != null) {
+            Subcategoria sub = subcategoriaService.findById(negocio, subcategoriaId);
+            if (!sub.getCategoria().getId().equals(catId))
+                throw new BusinessException("La subcategoria no pertenece a la categoria indicada");
+        }
+
+        return productoRepository.buscar(negocio, catId, soloSinCategoria, subcategoriaId, proveedorId, termino, pageable)
+            .map(p -> ProductoResponse.from(p, precioService.precioActual(p, TipoPrecio.VENTA)));
     }
 
     @Transactional
-    public ProductoResponse create (Negocio negocio, CreateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
-        if (productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+    public ProductoResponse create (Negocio negocio, CreateProductoRequest request, Long categoriaId, Long subcategoriaId, Long proveedorId, BigDecimal precio) {
+        if (productoRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
-        
+
         Producto producto = request.toEntity();
 
         producto.setNegocio(negocio);
@@ -67,6 +72,13 @@ public class ProductoService {
 
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
+
+        if (subcategoriaId != null) {
+            Subcategoria subcategoria = subcategoriaService.findById(negocio, subcategoriaId);
+            if (categoriaId == null || !subcategoria.getCategoria().getId().equals(categoriaId))
+                throw new com.stockeate.api.exceptions.exceptions.BusinessException("La subcategoria no pertenece a la categoria indicada");
+            producto.setSubcategoria(subcategoria);
+        }
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
@@ -79,10 +91,10 @@ public class ProductoService {
     }
 
     @Transactional
-    public ProductoResponse update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long proveedorId, BigDecimal precio) {
+    public ProductoResponse update (Negocio negocio, Long id, UpdateProductoRequest request, Long categoriaId, Long subcategoriaId, Long proveedorId, BigDecimal precio) {
         Producto producto = findById(negocio, id);
 
-        if (!producto.getDescripcion().equals(request.getDescripcion()) && productoRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion())) {
+        if (!producto.getDescripcion().equals(request.getDescripcion()) && productoRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion())) {
             throw new RuntimeException("Ya existe un producto con la descripcion " + request.getDescripcion());
         }
 
@@ -90,6 +102,13 @@ public class ProductoService {
 
         if (categoriaId != null)
             producto.setCategoria(categoriaService.findById(negocio, categoriaId));
+
+        if (subcategoriaId != null) {
+            Subcategoria subcategoria = subcategoriaService.findById(negocio, subcategoriaId);
+            if (categoriaId == null || !subcategoria.getCategoria().getId().equals(categoriaId))
+                throw new com.stockeate.api.exceptions.exceptions.BusinessException("La subcategoria no pertenece a la categoria indicada");
+            producto.setSubcategoria(subcategoria);
+        }
 
         if (proveedorId != null)
             producto.setProveedor(proveedorService.findById(negocio, proveedorId));
@@ -105,8 +124,7 @@ public class ProductoService {
     @Transactional
     public void deactivate (Negocio negocio, Long id) {
         Producto producto = findById(negocio, id);
-        producto.setActivo(false);
-        productoRepository.save(producto);
+        productoRepository.delete(producto);
     }
 
     @Transactional
@@ -127,22 +145,6 @@ public class ProductoService {
 
         producto.setStock(Math.max(0, producto.getStock() - cantidad));
         productoRepository.save(producto);
-    }
-
-    @Transactional
-    public ProductoResponse asignarCategoria (Negocio negocio, Long id, Long idCategoria) {
-        Categoria categoria = categoriaService.findById(negocio, idCategoria);
-        Producto producto = findById(negocio, id);
-        producto.setCategoria(categoria);
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto, TipoPrecio.VENTA));
-    }
-
-    @Transactional
-    public ProductoResponse asignarProveedor (Negocio negocio, Long id, Long idProveedor) {
-        Proveedor proveedor = proveedorService.findById(negocio, idProveedor);
-        Producto producto = findById(negocio, id);
-        producto.setProveedor(proveedor);
-        return ProductoResponse.from(productoRepository.save(producto), precioService.precioActual(producto, TipoPrecio.VENTA));
     }
 
     @Transactional

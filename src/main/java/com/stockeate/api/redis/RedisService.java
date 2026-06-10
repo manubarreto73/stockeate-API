@@ -36,4 +36,9 @@ public class RedisService {
         return intentos;
     }
 
+    /** Lee y borra la clave en una sola operación atómica (GETDEL). */
+    public String getAndDelete(String key) {
+        return redisTemplate.opsForValue().getAndDelete(key);
+    }
+
 }

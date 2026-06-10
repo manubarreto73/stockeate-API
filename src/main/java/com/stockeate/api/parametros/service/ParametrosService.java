@@ -77,4 +77,16 @@ public class ParametrosService {
         return parametrosRepository.save(parametros);
     }
 
+    @Transactional
+    public Parametros update(Long id, Parametros data) {
+        Parametros parametros = getById(id);
+        parametros.setUnaCompraDistintosProveedores(data.getUnaCompraDistintosProveedores());
+        parametros.setExigirFormaDePagoAlCargarVenta(data.getExigirFormaDePagoAlCargarVenta());
+        parametros.setExigirClienteAlCargarVenta(data.getExigirClienteAlCargarVenta());
+        parametros.setPermitirVenderSinStock(data.getPermitirVenderSinStock());
+        parametros.setEmpleadoPuedeCargarCompras(data.getEmpleadoPuedeCargarCompras());
+        parametros.setEmpleadoPuedeUtilizarAbm(data.getEmpleadoPuedeUtilizarAbm());
+        return parametrosRepository.save(parametros);
+    }
+
 }

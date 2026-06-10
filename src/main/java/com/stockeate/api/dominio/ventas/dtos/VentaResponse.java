@@ -20,8 +20,6 @@ public class VentaResponse {
     private String nombreCliente;
     private Long formaDePagoId;
     private String formaDePago;
-    private Boolean recibida;
-    private LocalDateTime fechaRecepcion;
     private List<ItemVentaResponse> items;
 
     public static VentaResponse from (Venta venta) {
@@ -32,8 +30,8 @@ public class VentaResponse {
             .nombreUsuario(venta.getVendidoPor().getNombreCompleto())
             .clienteId(venta.getCliente().getId())
             .nombreCliente(venta.getCliente().getNombreCompleto())
-            .formaDePagoId(venta.getFormaDePago().getId())
-            .formaDePago(venta.getFormaDePago().getDescripcion())
+            .formaDePagoId(venta.getFormaDePago() != null ? venta.getFormaDePago().getId() : 0)
+            .formaDePago(venta.getFormaDePago() != null ? venta.getFormaDePago().getDescripcion() : "")
             .items(venta.getItems().stream()
                     .map(item -> ItemVentaResponse.from(item, venta))
                     .toList())

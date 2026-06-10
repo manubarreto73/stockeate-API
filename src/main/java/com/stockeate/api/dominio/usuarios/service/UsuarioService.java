@@ -29,22 +29,22 @@ public class UsuarioService implements UserDetailsService{
     private final UsuarioRepository usuarioRepository;
 
     public Page<Usuario> getByNegocio (Negocio negocio, Pageable pageable) {
-        return usuarioRepository.findByNegocioAndActivoTrue(negocio, pageable);
+        return usuarioRepository.findByNegocio(negocio, pageable);
     }
 
     public Usuario findById (Negocio negocio, Long id) {
-        return usuarioRepository.findByIdAndNegocioAndActivoTrue(id, negocio)
+        return usuarioRepository.findByIdAndNegocio(id, negocio)
             .orElseThrow(() -> new BusinessException("Usuario no encontrado con id " + id));
     }
 
     public Usuario findByEmail (String email) {
-        return usuarioRepository.findByEmailAndActivoTrue(email)
+        return usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new BusinessException("Usuario no encontrado con email " + email));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return usuarioRepository.findByEmailAndActivoTrue(username)
+        return usuarioRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
@@ -83,8 +83,6 @@ public class UsuarioService implements UserDetailsService{
     @Transactional
     public Usuario update (Negocio negocio, Long id, UpdateUsuarioRequest request) {
         Usuario usuario = findById(negocio, id);
-        if (!request.hasChanges(usuario))
-            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
         return usuarioRepository.save(request.update(usuario));
     }
 
@@ -96,8 +94,8 @@ public class UsuarioService implements UserDetailsService{
 
         Usuario usuario = findById(negocio, id);
 
-        if (usuario.getRol().equals(RolUsuario.ADMIN) || usuario.getRol().equals(RolUsuario.ADMIN))
-            throw new BusinessException("Rol se puede cambiar el rol del administrador");
+        if (usuario.getRol().equals(RolUsuario.SUPERADMIN) || usuario.getRol().equals(RolUsuario.ADMIN))
+            throw new BusinessException("No se puede cambiar el rol del administrador");
 
         usuario.setRol(rol);
         return usuarioRepository.save(usuario);
@@ -107,7 +105,7 @@ public class UsuarioService implements UserDetailsService{
     public Usuario changePassword (Negocio negocio, Long id, String password) {
         Usuario usuario = findById(negocio, id);
 
-        if (password.equals(usuario.getPassword()))
+        if (passwordEncoder.matches(password, usuario.getPassword()))
             throw new BusinessException("La nueva contraseña es igual a la actual");
 
         usuario.setPassword(passwordEncoder.encode(password));
@@ -117,12 +115,11 @@ public class UsuarioService implements UserDetailsService{
     @Transactional
     public void deactivate (Negocio negocio, Long id) {
         Usuario usuario = findById(negocio, id);
-        
+
         if (usuario.getRol().equals(RolUsuario.SUPERADMIN) || usuario.getRol().equals(RolUsuario.ADMIN))
             throw new BusinessException("No se puede eliminar al usuario administrador");
 
-        usuario.setActivo(false);
-        usuarioRepository.save(usuario);
+        usuarioRepository.delete(usuario);
     }
 
     @Transactional

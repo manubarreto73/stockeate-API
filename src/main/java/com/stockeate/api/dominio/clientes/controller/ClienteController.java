@@ -3,7 +3,6 @@ package com.stockeate.api.dominio.clientes.controller;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +23,7 @@ import com.stockeate.api.dominio.clientes.entities.Cliente;
 import com.stockeate.api.dominio.clientes.service.ClienteService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.parametros.Constantes;
+import com.stockeate.api.parametros.service.PermisosService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,8 @@ import lombok.RequiredArgsConstructor;
 public class ClienteController {
 
     private final ClienteService clienteService;
-    
+    private final PermisosService permisosService;
+
     @GetMapping
     public ResponseEntity<Page<ClienteResponse>> getAll(
         @AuthenticationPrincipal Usuario autenticado,
@@ -52,11 +53,11 @@ public class ClienteController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponse> create (
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody RegisterClienteRequest request
     ) {
+        permisosService.verificarAbm(autenticado);
         Cliente cliente = clienteService.create(autenticado.getNegocio(), CreateClienteRequest.from(request.toEntity()));
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -64,13 +65,12 @@ public class ClienteController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponse> update (
-        @AuthenticationPrincipal Usuario autentiado,
+        @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody UpdateClienteRequest request
     ) {
-
-        Cliente cliente = clienteService.update(autentiado.getNegocio(), request.getIdCliente(), UpdateClienteCommand.from(request.toEntity()));
+        permisosService.verificarAbm(autenticado);
+        Cliente cliente = clienteService.update(autenticado.getNegocio(), request.getIdCliente(), UpdateClienteCommand.from(request.toEntity()));
 
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -78,11 +78,11 @@ public class ClienteController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete (
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteClienteRequest request
     ) {
+        permisosService.verificarAbm(autenticado);
         clienteService.deactivate(autenticado.getNegocio(), request.getIdCliente());
         return ResponseEntity.ok().build();
     }

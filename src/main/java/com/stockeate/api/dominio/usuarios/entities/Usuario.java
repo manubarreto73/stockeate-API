@@ -11,6 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 
 @Entity
@@ -18,6 +21,8 @@ import com.stockeate.api.dominio.negocios.entities.Negocio;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE usuarios SET activo = false WHERE usuario_id = ?")
+@SQLRestriction("activo = true")
 public class Usuario implements UserDetails{
 
     @Id

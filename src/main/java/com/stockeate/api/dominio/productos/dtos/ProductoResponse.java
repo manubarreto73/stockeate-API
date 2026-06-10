@@ -20,6 +20,8 @@ public class ProductoResponse {
     private LocalDateTime fechaCreacion;
     private Long categoriaId;
     private String descCategoria;
+    private Long subcategoriaId;
+    private String descSubcategoria;
     private Long proveedorId;
     private String descProveedor;
 
@@ -32,6 +34,8 @@ public class ProductoResponse {
             .fechaCreacion(producto.getFechaCreacion())
             .categoriaId(producto.getCategoria() == null ? 0 : producto.getCategoria().getId())
             .descCategoria(producto.getCategoria() == null ? "" : producto.getCategoria().getDescripcion())
+            .subcategoriaId(producto.getSubcategoria() == null ? 0 : producto.getSubcategoria().getId())
+            .descSubcategoria(producto.getSubcategoria() == null ? "" : producto.getSubcategoria().getDescripcion())
             .proveedorId(producto.getProveedor() == null ? 0 : producto.getProveedor().getId())
             .descProveedor(producto.getProveedor() == null ? "" : producto.getProveedor().getDescripcion())
             .build();

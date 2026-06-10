@@ -31,21 +31,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException e) {
         return ResponseEntity
             .status(HttpStatus.FORBIDDEN)
-            .body(new ErrorResponse(401, "Accion no autorizada", LocalDateTime.now()));
+            .body(new ErrorResponse(403, "Accion no autorizada", LocalDateTime.now()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException  e) {
-        
+
         Map<String, String> errores = new HashMap<>();
         e.getBindingResult().getFieldErrors()
             .forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
-        
-        Map<String, Object> body = new HashMap<>();
-            body.put("status", 400);
-            body.put("errores", errores);
-            body.put("timestamp", LocalDateTime.now());
-        
+
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(400, errores, LocalDateTime.now()));
@@ -68,21 +63,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TransientObjectException.class)
     public ResponseEntity<ErrorResponse> handleTransientObject(TransientObjectException e) {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorResponse(500, "Error interno del servidor", LocalDateTime.now()));
     }
 
     @ExceptionHandler(RedisConnectionFailureException.class)
     public ResponseEntity<ErrorResponse> handleRedisFailure(RedisConnectionFailureException e) {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));
+            .status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body(new ErrorResponse(503, "Servicio de sesión no disponible", LocalDateTime.now()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorResponse(500, e.getMessage(), LocalDateTime.now()));
+            .body(new ErrorResponse(500, "Error interno del servidor", LocalDateTime.now()));
     }
 }

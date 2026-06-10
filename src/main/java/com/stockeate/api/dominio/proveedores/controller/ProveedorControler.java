@@ -23,6 +23,7 @@ import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 import com.stockeate.api.dominio.proveedores.services.ProveedorService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.parametros.Constantes;
+import com.stockeate.api.parametros.service.PermisosService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +31,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/proveedores")
 @RequiredArgsConstructor
 public class ProveedorControler {
-    
+
     private final ProveedorService proveedorService;
+    private final PermisosService permisosService;
 
     @GetMapping
     public ResponseEntity<Page<ProveedorResponse>> getAll(
@@ -53,6 +55,7 @@ public class ProveedorControler {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody RegisterProveedorRequest request
     ) {
+        permisosService.verificarAbm(autenticado);
         Proveedor proveedor = proveedorService.create(
             autenticado.getNegocio(), 
             CreateProveedorRequest.from(request.toEntity())
@@ -67,6 +70,7 @@ public class ProveedorControler {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody ChangeProveedorRequest request
     ) {
+        permisosService.verificarAbm(autenticado);
         Proveedor proveedor = proveedorService.update(
             autenticado.getNegocio(),
             request.getIdProveedor(),
@@ -82,6 +86,7 @@ public class ProveedorControler {
         @AuthenticationPrincipal Usuario autenticado,
         @RequestBody DeleteProveedorRequest request
     ) {
+        permisosService.verificarAbm(autenticado);
         proveedorService.deactivate(autenticado.getNegocio(), request.getIdProveedor());
         return ResponseEntity
             .status(HttpStatus.OK)

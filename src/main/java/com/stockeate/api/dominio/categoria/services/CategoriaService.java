@@ -23,19 +23,20 @@ public class CategoriaService {
 
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
+    private final SubcategoriaService subcategoriaService;
 
     public Categoria findById (Negocio negocio, Long id) {
-        return categoriaRepository.findByNegocioAndIdAndActivoTrue(negocio, id)
+        return categoriaRepository.findByNegocioAndId(negocio, id)
             .orElseThrow(() -> new BusinessException("Categoria no encontrada con id " + id));
     }
 
     public Page<Categoria> getByNegocio (Negocio negocio, Pageable pageable) {
-        return categoriaRepository.findByNegocioAndActivoTrue(negocio, pageable);
+        return categoriaRepository.findByNegocio(negocio, pageable);
     }
 
     @Transactional
     public Categoria create (Negocio negocio, CreateCategoriaRequest request) {
-        if (categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
+        if (categoriaRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion()))
             throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
 
         Categoria categoria = request.toEntity();
@@ -51,11 +52,8 @@ public class CategoriaService {
     public Categoria update (Negocio negocio, Long id, UpdateCategoriaRequest request) {
         Categoria categoria = findById(negocio, id);
 
-        if (!categoria.getDescripcion().equals(request.getDescripcion()) && categoriaRepository.existsByNegocioAndDescripcionAndActivoTrue(negocio, request.getDescripcion()))
+        if (!categoria.getDescripcion().equals(request.getDescripcion()) && categoriaRepository.existsByNegocioAndDescripcion(negocio, request.getDescripcion()))
             throw new BusinessException("Ya existe una categoria con la descripcion " + request.getDescripcion());
-
-        if (!request.hasChanges(categoria))
-            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
 
         return categoriaRepository.save(request.update(categoria));
     }
@@ -63,9 +61,9 @@ public class CategoriaService {
     @Transactional
     public void deactivate (Negocio negocio, Long id) {
         Categoria categoria = findById(negocio, id);
-        categoria.setActivo(false);
+        subcategoriaService.deactivateByCategoria(id);
         productoRepository.clearCategoria(id);
-        categoriaRepository.save(categoria);
-    } 
+        categoriaRepository.delete(categoria);
+    }
 
 }

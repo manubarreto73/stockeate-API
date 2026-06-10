@@ -8,26 +8,44 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.stockeate.api.dominio.categoria.entities.Categoria;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.productos.entities.Producto;
 
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    
-    Page<Producto> findByActivoTrueAndNegocio(Negocio negocio, Pageable pageable);
 
-    Page<Producto> findByActivoTrueAndNegocioAndCategoria(Negocio negocio, Categoria categoria, Pageable pageable);
+    @Query("""
+        SELECT p FROM Producto p
+        WHERE p.negocio = :negocio
+          AND (:categoriaId IS NULL OR p.categoria.id = :categoriaId)
+          AND (:soloSinCategoria = false OR p.categoria IS NULL)
+          AND (:subcategoriaId IS NULL OR p.subcategoria.id = :subcategoriaId)
+          AND (:proveedorId IS NULL OR p.proveedor.id = :proveedorId)
+          AND (:busqueda IS NULL OR LOWER(p.descripcion) LIKE :busqueda)
+        """)
+    Page<Producto> buscar(
+        @Param("negocio") Negocio negocio,
+        @Param("categoriaId") Long categoriaId,
+        @Param("soloSinCategoria") boolean soloSinCategoria,
+        @Param("subcategoriaId") Long subcategoriaId,
+        @Param("proveedorId") Long proveedorId,
+        @Param("busqueda") String busqueda,
+        Pageable pageable
+    );
 
-    Optional<Producto> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
+    Optional<Producto> findByNegocioAndId(Negocio negocio, Long id);
 
-    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcion(Negocio negocio, String descripcion);
 
     @Modifying
-    @Query("UPDATE Producto p SET p.categoria = null WHERE p.categoria.id = :categoriaId")
+    @Query("UPDATE Producto p SET p.categoria = null, p.subcategoria = null WHERE p.categoria.id = :categoriaId")
     void clearCategoria(@Param("categoriaId") Long categoriaId);
 
     @Modifying
     @Query("UPDATE Producto p SET p.proveedor = null WHERE p.proveedor.id = :proveedorId")
-    void clearProveedor(@Param("proveedorId") Long categoriaId);
+    void clearProveedor(@Param("proveedorId") Long proveedorId);
+
+    @Modifying
+    @Query("UPDATE Producto p SET p.subcategoria = null WHERE p.subcategoria.id = :subcategoriaId")
+    void clearSubcategoria(@Param("subcategoriaId") Long subcategoriaId);
 
 }

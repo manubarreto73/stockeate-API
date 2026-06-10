@@ -10,10 +10,10 @@ import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long>  {
     
-    Page<Proveedor> findByNegocioAndActivoTrue(Negocio negocio, Pageable pageable);
+    Page<Proveedor> findByNegocio(Negocio negocio, Pageable pageable);
 
-    Optional<Proveedor> findByNegocioAndIdAndActivoTrue(Negocio negocio, Long id);
+    Optional<Proveedor> findByNegocioAndId(Negocio negocio, Long id);
 
-    Boolean existsByNegocioAndDescripcionAndActivoTrue(Negocio negocio, String descripcion);
+    Boolean existsByNegocioAndDescripcion(Negocio negocio, String descripcion);
 
 }

@@ -16,10 +16,6 @@ public class UpdateProductoRequest {
         return producto;
     }
 
-    public Boolean hasChanges(Producto producto) {
-        return !this.descripcion.equals(producto.getDescripcion());
-    }
-
     public static UpdateProductoRequest from(Producto producto) {
         
         return UpdateProductoRequest.builder()

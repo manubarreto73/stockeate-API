@@ -1,6 +1,7 @@
 package com.stockeate.api.dominio.usuarios.controller;
 
 import com.stockeate.api.dominio.usuarios.dtos.controller.UsuarioResponse;
+import java.util.Arrays;
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.ChangePassRequest;
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.ChangeRolRequest;
 import com.stockeate.api.dominio.usuarios.dtos.controller.usuarios.RegisterRequest;
@@ -31,6 +32,13 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     
+    @GetMapping("/roles")
+    public ResponseEntity<RolUsuario[]> getRoles() {
+        return ResponseEntity.ok(Arrays.stream(RolUsuario.values())
+                .filter(r -> r != RolUsuario.SUPERADMIN)
+                .toArray(RolUsuario[]::new));
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UsuarioResponse>> getAll(
@@ -64,11 +72,12 @@ public class UsuarioController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponse> update (
         @AuthenticationPrincipal Usuario autentiado,
         @Valid @RequestBody ChangeUsuarioRequest request
     ) {
+        isUserOrHimself(autentiado, request.getIdUsuario());
+
         Usuario usuarioRequest = request.toEntity();
 
         Usuario usuario = usuarioService.update(autentiado.getNegocio(), request.getIdUsuario(), UpdateUsuarioRequest.from(usuarioRequest));

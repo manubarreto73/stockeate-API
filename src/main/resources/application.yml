@@ -29,8 +29,11 @@ spring:
   
 security:
   jwt:
-    secret-key: 0DNJ1N4u8v7yXmEKRhNf567OJUuvL4RvEKSUmkDZxp0QkTAn
-    expiration-time: 3600000
+    # Obligatorio: setear JWT_SECRET_KEY como variable de entorno (mínimo 256 bits, Base64).
+    # No se define un valor por defecto: si falta, la app falla al arrancar.
+    secret-key: ${JWT_SECRET_KEY:}
+    expiration-time: 900000
+    refresh-expiration-days: 7
 
 app:
   search:

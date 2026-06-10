@@ -118,7 +118,14 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
-		
+
+        <!-- DataFaker — seed de datos de prueba (perfil "seed") -->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.4.1</version>
+        </dependency>
+
 	</dependencies>
 
 	<build>

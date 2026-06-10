@@ -20,6 +20,7 @@ import com.stockeate.api.dominio.productos.entities.Producto;
 import com.stockeate.api.dominio.productos.services.ProductoService;
 import com.stockeate.api.dominio.usuarios.entities.Usuario;
 import com.stockeate.api.parametros.Constantes;
+import com.stockeate.api.parametros.service.PermisosService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +41,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/compras")
 @RequiredArgsConstructor
 public class ComprasController {
-    
+
     private final CompraService compraService;
     private final ItemCompraService itemCompraService;
     private final ProductoService productoService;
+    private final PermisosService permisosService;
 
     @GetMapping
     public ResponseEntity<Page<CompraResponse>> getAll (
@@ -66,6 +68,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody RegisterCompraRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         Compra compra = compraService.create(new CreateCompraCommand(autenticado.getNegocio(), autenticado, request.getFechaRecepcion(), request.getItems()));
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -77,6 +80,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody MarcarComoRecibidaRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(CompraResponse.from(compraService.marcarComoRecibida(autenticado.getNegocio(), request.getIdCompra())));
@@ -87,6 +91,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody AddItemRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         Compra compra = compraService.findById(autenticado.getNegocio(), request.getCompraId());
         Producto producto = productoService.findById(autenticado.getNegocio(), request.getProductoId());
         ItemCompra item = itemCompraService.addItem(compra, producto, request.getCantidad());
@@ -100,6 +105,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody EditItemRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         ItemCompra item = itemCompraService.editItem(request.getItemCompraId(), request.getCantidad());
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -111,6 +117,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody RemoveItemRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         itemCompraService.removeItem(request.getItemCompraId());
         return ResponseEntity
             .status(HttpStatus.OK)
@@ -122,6 +129,7 @@ public class ComprasController {
         @AuthenticationPrincipal Usuario autenticado,
         @Valid @RequestBody DeleteCompraRequest request
     ) {
+        permisosService.verificarCompras(autenticado);
         compraService.delete(autenticado.getNegocio(), request.getCompraId());
         return ResponseEntity
             .status(HttpStatus.OK)

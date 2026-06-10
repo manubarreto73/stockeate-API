@@ -46,7 +46,7 @@ public class VentaController {
     public ResponseEntity<Page<VentaResponse>> getAll (
         @AuthenticationPrincipal Usuario autenticado,
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "fechaCreacion") String sortBy,
+        @RequestParam(defaultValue = "fechaHora") String sortBy,
         @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();

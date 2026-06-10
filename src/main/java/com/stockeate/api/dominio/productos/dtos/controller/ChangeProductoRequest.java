@@ -27,6 +27,8 @@ public class ChangeProductoRequest {
 
     private Long categoriaId;
 
+    private Long subcategoriaId;
+
     private Long proveedorId;
 
     @NotNull

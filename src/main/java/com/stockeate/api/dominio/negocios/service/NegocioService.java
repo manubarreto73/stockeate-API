@@ -25,7 +25,7 @@ public class NegocioService {
     private final ParametrosService parametrosService;
 
     public Page<Negocio> getAll(Pageable pageable) {
-        return negocioRepository.findByActivoTrue(pageable);
+        return negocioRepository.findAll(pageable);
     }
 
     public Negocio findById (Long id) {
@@ -56,8 +56,6 @@ public class NegocioService {
         if (!negocio.getNombreNegocio().equals(request.getNombreNegocio()) && negocioRepository.existsByNombreNegocio(request.getNombreNegocio()))
             throw new BusinessException("Ya existe un negocio con ese nombre");
 
-        if (!request.hasChanges(negocio))
-            throw new BusinessException("La entidad enviada para actualizar no contiene cambios");
         return negocioRepository.save(request.update(negocio));
     }
 

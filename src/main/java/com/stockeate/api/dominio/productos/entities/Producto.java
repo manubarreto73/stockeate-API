@@ -3,11 +3,15 @@ package com.stockeate.api.dominio.productos.entities;
 import java.time.LocalDateTime;
 
 import com.stockeate.api.dominio.categoria.entities.Categoria;
+import com.stockeate.api.dominio.categoria.entities.Subcategoria;
 import com.stockeate.api.dominio.negocios.entities.Negocio;
 import com.stockeate.api.dominio.proveedores.entities.Proveedor;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(
@@ -17,6 +21,8 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE productos SET activo = false WHERE producto_id = ?")
+@SQLRestriction("activo = true")
 public class Producto {
     
     @Id
@@ -39,7 +45,11 @@ public class Producto {
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "categoria_id", nullable = true)
     private Categoria categoria;
-    
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "subcategoria_id", nullable = true)
+    private Subcategoria subcategoria;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
     @JoinColumn(name = "proveedor_id", nullable = true)
     private Proveedor proveedor;

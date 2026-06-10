@@ -1,0 +1,5 @@
+security:
+  jwt:
+    secret-key: dGVzdC1zZWNyZXQta2V5LXBhcmEtdGVzdHMtZGUtc3RvY2tlYXRlLTI1Ng==
+    expiration-time: 900000
+    refresh-expiration-days: 7
